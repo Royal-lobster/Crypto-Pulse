@@ -7,7 +7,7 @@ import { tokenRouter } from "~/server/api/routers/token";
  * All routers added in /api/routers should be manually added here.
  */
 export const appRouter = createTRPCRouter({
-  example: tokenRouter,
+  token: tokenRouter,
 });
 
 // export type definition of API
