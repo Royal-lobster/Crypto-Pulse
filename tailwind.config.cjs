@@ -4,15 +4,15 @@ const config = {
   theme: {
     extend: {
       fontFamily: {
-        display: ["'Montserrat', 'sans-serif'"],
-        body: ["'Montserrat', 'sans-serif'"],
-        inter: ["'Inter', 'sans-serif'"],
+        display: ["var(--montserrat-font)"],
+        body: ["var(--montserrat-font)"],
+        inter: ["var(--inter-font)"],
       },
     },
     fontFamily: {
-      display: ["'Montserrat', 'sans-serif'"],
-      body: ["'Montserrat', 'sans-serif'"],
-      inter: ["'Inter', 'sans-serif'"],
+      display: ["var(--montserrat-font)"],
+      body: ["var(--montserrat-font)"],
+      inter: ["var(--inter-font)"],
     },
   },
   plugins: [],
