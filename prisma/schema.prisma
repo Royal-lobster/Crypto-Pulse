@@ -6,12 +6,46 @@ generator client {
 }
 
 datasource db {
-    provider = "sqlite"
+    provider = "postgresql"
     url      = env("DATABASE_URL")
 }
 
-model Example {
-    id        String   @id @default(cuid())
+model User {
+    id        String   @id
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
+    tokens    Token[]
+    hiIQ      Float
+}
+
+model Token {
+    id         String       @id
+    createdAt  DateTime     @default(now())
+    updatedAt  DateTime     @updatedAt
+    news       News[]
+    statistics Statistics[]
+    User       User?        @relation(fields: [userId], references: [id])
+    userId     String?
+}
+
+model News {
+    id        String   @id
+    createdAt DateTime @default(now())
+    title     String
+    content   String
+    image     String
+    category  String
+    Token     Token    @relation(fields: [tokenId], references: [id])
+    tokenId   String   @unique
+}
+
+model Statistics {
+    id              String   @id
+    createdAt       DateTime @default(now())
+    updatedAt       DateTime @updatedAt
+    dayLowestPrice  Float
+    dayHighestPrice Float
+    dayVolume       Float
+    Token           Token    @relation(fields: [tokenId], references: [id])
+    tokenId         String   @unique
 }
