@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "../trpc";
 import { getUserHiIQValue } from "~/utils/getUserHiIQValue";
+import { UserModel } from "prisma/zod";
 
 export const userRouter = createTRPCRouter({
   registerUser: protectedProcedure
@@ -14,5 +15,14 @@ export const userRouter = createTRPCRouter({
         update: {},
         create: { id: ctx.userAddress, hiIQ },
       });
+    }),
+  getUser: protectedProcedure
+    .output(z.nullable(UserModel))
+    .query(async ({ ctx }) => {
+      const user = await ctx.prisma.user.findUnique({
+        where: { id: ctx.userAddress },
+      });
+
+      return user;
     }),
 });
