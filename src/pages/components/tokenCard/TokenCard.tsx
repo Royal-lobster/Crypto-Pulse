@@ -19,7 +19,7 @@ const TokenCard = ({ image, name, symbol }: TokenCardProps) => {
     <div
       className={`${
         isChecked ? "bg-[#3D4045]" : ""
-      } flex items-center rounded-xl py-2.5 px-4 `}
+      } flex items-center rounded-xl py-2.5 px-4`}
     >
       <div className="flex w-full items-center gap-3">
         <Image
