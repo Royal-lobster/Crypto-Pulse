@@ -43,7 +43,8 @@ const createInnerTRPCContext = (_opts: CreateContextOptions) => {
  * @see https://trpc.io/docs/context
  */
 export const createTRPCContext = (_opts: CreateNextContextOptions) => {
-  return createInnerTRPCContext({});
+  const xAuthToken = _opts.req.headers["x-auth-token"] as string | undefined;
+  return { ...createInnerTRPCContext({}), xAuthToken };
 };
 
 /**
@@ -51,8 +52,9 @@ export const createTRPCContext = (_opts: CreateNextContextOptions) => {
  *
  * This is where the tRPC API is initialized, connecting the context and transformer.
  */
-import { initTRPC } from "@trpc/server";
+import { TRPCError, initTRPC } from "@trpc/server";
 import superjson from "superjson";
+import { verify } from "web3-token";
 
 const t = initTRPC.context<typeof createTRPCContext>().create({
   transformer: superjson,
@@ -66,7 +68,34 @@ const t = initTRPC.context<typeof createTRPCContext>().create({
  *
  * These are the pieces you use to build your tRPC API. You should import these a lot in the
  * "/src/server/api/routers" directory.
+ *
  */
+
+const isUserAuthenticated = t.middleware(({ next, ctx }) => {
+  let userAddress = null;
+  if (ctx.xAuthToken) {
+    try {
+      const { address } = verify(ctx.xAuthToken);
+      userAddress = address;
+    } catch (e) {}
+  }
+  if (!userAddress) throw new TRPCError({ code: "UNAUTHORIZED" });
+
+  return next({ ctx: { userAddress } });
+});
+
+const isSecretAuthenticated = t.middleware(({ next, ctx }) => {
+  if (ctx.xAuthToken && ctx.xAuthToken === (process.env.API_PW as string)) {
+    return next();
+  }
+  throw new TRPCError({
+    code: "UNAUTHORIZED",
+    message: `You passed ${ctx.xAuthToken || "nothing"}`,
+  });
+});
+
+export const protectedProcedure = t.procedure.use(isUserAuthenticated);
+export const secretProcedure = t.procedure.use(isSecretAuthenticated);
 
 /**
  * This is how you create new routers and sub-routers in your tRPC API.
