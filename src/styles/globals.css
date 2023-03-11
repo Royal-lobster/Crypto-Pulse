@@ -2,6 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+body {
+  background-color: #27272a;
+}
+
 .token-card-checkbox {
   margin: 0;
   padding: 0;

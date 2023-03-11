@@ -1,31 +1,11 @@
-import { type QueryObserverResult, useQuery } from "@tanstack/react-query";
 import { useRef, useState } from "react";
-import { type Coin } from "types/coin";
 import SearchIcon from "../Icons/Search";
 import SelectToken from "./SelectToken";
 import TokenList from "./TokenList";
 
 const AllTokens = () => {
   const [query, setQuery] = useState("");
-
   const inputRef = useRef<HTMLInputElement>(null);
-
-  const searchCoins = async () => {
-    if (!query) return;
-
-    const res = await fetch(
-      `https://api.coingecko.com/api/v3/search?query=${query}`
-    );
-
-    return res.json();
-  };
-
-  const { data }: QueryObserverResult<Coin[], unknown> = useQuery({
-    queryKey: ["search"],
-    queryFn: searchCoins,
-  });
-
-  console.log(data);
 
   return (
     <div className="mt-28">
@@ -53,7 +33,8 @@ const AllTokens = () => {
           </button>
         </div>
       </div>
-      {!query ? <SelectToken /> : <TokenList data={data} />}
+      {!query && <SelectToken />}
+      {query && <TokenList query={query} />}
     </div>
   );
 };

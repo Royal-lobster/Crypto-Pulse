@@ -3,16 +3,17 @@ import { useState } from "react";
 
 type TokenCardProps = {
   id: string;
-  image: {
+  image?: {
     large: string;
     thumb: string;
     small: string;
   };
+  thumb?: string;
   name: string;
   symbol: string;
 };
 
-const TokenCard = ({ image, name, symbol }: TokenCardProps) => {
+const TokenCard = ({ image, name, symbol, thumb }: TokenCardProps) => {
   const [isChecked, setIsChecked] = useState(false);
 
   return (
@@ -23,7 +24,7 @@ const TokenCard = ({ image, name, symbol }: TokenCardProps) => {
     >
       <div className="flex w-full items-center gap-3">
         <Image
-          src={image?.large}
+          src={thumb ? thumb : (image?.large as string)}
           alt={name}
           width={40}
           height={40}
