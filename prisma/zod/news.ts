@@ -1,5 +1,5 @@
 import * as z from "zod"
-import { CompleteToken, RelatedTokenModel } from "./index"
+import { CompleteToken, RelatedTokenModel, CompleteTokenNews, RelatedTokenNewsModel } from "./index"
 
 export const NewsModel = z.object({
   id: z.string(),
@@ -7,12 +7,11 @@ export const NewsModel = z.object({
   title: z.string(),
   content: z.string(),
   image: z.string(),
-  category: z.string(),
-  tokenId: z.string(),
 })
 
 export interface CompleteNews extends z.infer<typeof NewsModel> {
-  Token: CompleteToken
+  tokens: CompleteToken[]
+  TokenNews: CompleteTokenNews[]
 }
 
 /**
@@ -21,5 +20,6 @@ export interface CompleteNews extends z.infer<typeof NewsModel> {
  * NOTE: Lazy required in case of potential circular dependencies within schema
  */
 export const RelatedNewsModel: z.ZodSchema<CompleteNews> = z.lazy(() => NewsModel.extend({
-  Token: RelatedTokenModel,
+  tokens: RelatedTokenModel.array(),
+  TokenNews: RelatedTokenNewsModel.array(),
 }))

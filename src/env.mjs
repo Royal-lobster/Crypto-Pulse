@@ -9,6 +9,9 @@ const server = z.object({
   NODE_ENV: z.enum(["development", "test", "production"]),
   ALCHEMY_API_KEY: z.string().min(1),
   HiIQ_CONTRACT_ADDRESS: z.string().startsWith("0x").length(42),
+  BANANA_API_KEY: z.string().min(1),
+  BANANA_MODEL_KEY: z.string().min(1),
+  CRYPTOPANIC_API_KEY: z.string().min(1),
 });
 
 /**
@@ -30,6 +33,9 @@ const processEnv = {
   NODE_ENV: process.env.NODE_ENV,
   ALCHEMY_API_KEY: process.env.ALCHEMY_API_KEY,
   HiIQ_CONTRACT_ADDRESS: process.env.HiIQ_CONTRACT_ADDRESS,
+  BANANA_API_KEY: process.env.BANANA_API_KEY,
+  BANANA_MODEL_KEY: process.env.BANANA_MODEL_KEY,
+  CRYPTOPANIC_API_KEY: process.env.CRYPTOPANIC_API_KEY,
 };
 
 // Don't touch the part below

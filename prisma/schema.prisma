@@ -35,7 +35,7 @@ model User {
     id        String   @id
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
-    tokens    Token[]
+    tokens    Token[] // One user can have many tokens
     hiIQ      Float
 }
 
@@ -43,21 +43,31 @@ model Token {
     id         String       @id
     createdAt  DateTime     @default(now())
     updatedAt  DateTime     @updatedAt
-    news       News[]
+    news       News[] // One token can have many news
     statistics Statistics[]
-    User       User?        @relation(fields: [userId], references: [id])
-    userId     String?
+    users      User[] // One token can be owned by many users
+    TokenNews  TokenNews[]
 }
 
 model News {
-    id        String   @id
-    createdAt DateTime @default(now())
+    id        String      @id
+    createdAt DateTime    @default(now())
     title     String
     content   String
     image     String
-    category  String
-    Token     Token    @relation(fields: [tokenId], references: [id])
-    tokenId   String   @unique
+    tokens    Token[] // One news can belong to many tokens
+    TokenNews TokenNews[]
+}
+
+// New model that represents the intermediate table
+model TokenNews {
+    id      String @id
+    token   Token  @relation(fields: [tokenId], references: [id])
+    tokenId String
+    news    News   @relation(fields: [newsId], references: [id])
+    newsId  String
+
+    @@unique([tokenId, newsId])
 }
 
 model Statistics {
