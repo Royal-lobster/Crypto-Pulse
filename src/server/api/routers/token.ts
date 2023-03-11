@@ -4,15 +4,15 @@ import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 
 export const tokenRouter = createTRPCRouter({
   addToken: protectedProcedure
-    .input(z.object({ tokenId: z.string() }))
+    .input(z.object({ tokenId: z.string(), tickerId: z.string() }))
     .output(z.void())
     .mutation(async ({ input, ctx }) => {
-      const { tokenId } = input;
+      const { tokenId, tickerId } = input;
 
       const token = await ctx.prisma.token.upsert({
         where: { id: tokenId },
         update: {},
-        create: { id: tokenId },
+        create: { id: tokenId, ticker: tickerId },
       });
 
       await ctx.prisma.user.update({
@@ -39,17 +39,5 @@ export const tokenRouter = createTRPCRouter({
           },
         },
       });
-
-      // Also remove token if it's not connected to any user
-      // TODO: Can remove this to a cron job if it's too slow
-
-      const tokenToDelete = await ctx.prisma.token.findUnique({
-        where: { id: tokenId },
-        select: { User: { select: { id: true } } },
-      });
-
-      if (!tokenToDelete?.User?.id) {
-        await ctx.prisma.token.delete({ where: { id: tokenId } });
-      }
     }),
 });

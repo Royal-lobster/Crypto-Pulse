@@ -22,7 +22,6 @@ export const userRouter = createTRPCRouter({
       const user = await ctx.prisma.user.findUnique({
         where: { id: ctx.userAddress },
       });
-
       return user;
     }),
 });

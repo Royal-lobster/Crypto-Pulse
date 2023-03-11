@@ -41,6 +41,7 @@ model User {
 
 model Token {
     id         String       @id
+    ticker     String       @unique
     createdAt  DateTime     @default(now())
     updatedAt  DateTime     @updatedAt
     news       News[] // One token can have many news
