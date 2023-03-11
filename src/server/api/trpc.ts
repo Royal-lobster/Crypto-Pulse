@@ -15,14 +15,10 @@
  * These allow you to access things when processing a request, like the database, the session, etc.
  */
 import { type CreateNextContextOptions } from "@trpc/server/adapters/next";
-import { type Session } from "next-auth";
 
-import { getServerAuthSession } from "~/server/auth";
 import { prisma } from "~/server/db";
 
-type CreateContextOptions = {
-  session: Session | null;
-};
+type CreateContextOptions = Record<string, never>;
 
 /**
  * This helper generates the "internals" for a tRPC context. If you need to use it, you can export
@@ -34,9 +30,8 @@ type CreateContextOptions = {
  *
  * @see https://create.t3.gg/en/usage/trpc#-servertrpccontextts
  */
-const createInnerTRPCContext = (opts: CreateContextOptions) => {
+const createInnerTRPCContext = (_opts: CreateContextOptions) => {
   return {
-    session: opts.session,
     prisma,
   };
 };
@@ -47,15 +42,9 @@ const createInnerTRPCContext = (opts: CreateContextOptions) => {
  *
  * @see https://trpc.io/docs/context
  */
-export const createTRPCContext = async (opts: CreateNextContextOptions) => {
-  const { req, res } = opts;
-
-  // Get the session from the server using the getServerSession wrapper function
-  const session = await getServerAuthSession({ req, res });
-
-  return createInnerTRPCContext({
-    session,
-  });
+export const createTRPCContext = (_opts: CreateNextContextOptions) => {
+  const xAuthToken = _opts.req.headers["x-auth-token"] as string | undefined;
+  return { ...createInnerTRPCContext({}), xAuthToken };
 };
 
 /**
@@ -63,8 +52,9 @@ export const createTRPCContext = async (opts: CreateNextContextOptions) => {
  *
  * This is where the tRPC API is initialized, connecting the context and transformer.
  */
-import { initTRPC, TRPCError } from "@trpc/server";
+import { TRPCError, initTRPC } from "@trpc/server";
 import superjson from "superjson";
+import { verify } from "web3-token";
 
 const t = initTRPC.context<typeof createTRPCContext>().create({
   transformer: superjson,
@@ -78,7 +68,34 @@ const t = initTRPC.context<typeof createTRPCContext>().create({
  *
  * These are the pieces you use to build your tRPC API. You should import these a lot in the
  * "/src/server/api/routers" directory.
+ *
  */
+
+const isUserAuthenticated = t.middleware(({ next, ctx }) => {
+  let userAddress = null;
+  if (ctx.xAuthToken) {
+    try {
+      const { address } = verify(ctx.xAuthToken);
+      userAddress = address;
+    } catch (e) {}
+  }
+  if (!userAddress) throw new TRPCError({ code: "UNAUTHORIZED" });
+
+  return next({ ctx: { userAddress } });
+});
+
+const isSecretAuthenticated = t.middleware(({ next, ctx }) => {
+  if (ctx.xAuthToken && ctx.xAuthToken === (process.env.API_PW as string)) {
+    return next();
+  }
+  throw new TRPCError({
+    code: "UNAUTHORIZED",
+    message: `You passed ${ctx.xAuthToken || "nothing"}`,
+  });
+});
+
+export const protectedProcedure = t.procedure.use(isUserAuthenticated);
+export const secretProcedure = t.procedure.use(isSecretAuthenticated);
 
 /**
  * This is how you create new routers and sub-routers in your tRPC API.
@@ -95,26 +112,3 @@ export const createTRPCRouter = t.router;
  * are logged in.
  */
 export const publicProcedure = t.procedure;
-
-/** Reusable middleware that enforces users are logged in before running the procedure. */
-const enforceUserIsAuthed = t.middleware(({ ctx, next }) => {
-  if (!ctx.session || !ctx.session.user) {
-    throw new TRPCError({ code: "UNAUTHORIZED" });
-  }
-  return next({
-    ctx: {
-      // infers the `session` as non-nullable
-      session: { ...ctx.session, user: ctx.session.user },
-    },
-  });
-});
-
-/**
- * Protected (authenticated) procedure
- *
- * If you want a query or mutation to ONLY be accessible to logged in users, use this. It verifies
- * the session is valid and guarantees `ctx.session.user` is not null.
- *
- * @see https://trpc.io/docs/procedures
- */
-export const protectedProcedure = t.procedure.use(enforceUserIsAuthed);
