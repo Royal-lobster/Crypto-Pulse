@@ -4,8 +4,37 @@ import Head from "next/head";
 import { signIn, signOut, useSession } from "next-auth/react";
 import { api } from "~/utils/api";
 import Navbar from "~/components/navbar/Navbar";
+import { type QueryObserverResult, useQuery } from "@tanstack/react-query";
+import { useWeb3Token } from "~/hooks/useWeb3Token";
+import TokenCard from "./components/tokenCard/TokenCard";
+
+interface Coin {
+  id: string;
+  image: {
+    large: string;
+    thumb: string;
+    small: string;
+  };
+  name: string;
+  symbol: string;
+}
 
 const Home: NextPage = () => {
+  const { token } = useWeb3Token();
+
+  const getCoins = async () => {
+    const res = await fetch("https://api.coingecko.com/api/v3/coins/");
+
+    // https://api.coingecko.com/api/v3/search?bitcoin
+
+    return res.json();
+  };
+
+  const { data }: QueryObserverResult<Coin[], unknown> = useQuery({
+    queryKey: ["coins"],
+    queryFn: getCoins,
+  });
+
   return (
     <>
       <Head>
@@ -47,19 +76,45 @@ const Home: NextPage = () => {
               </div>
             </div>
           </div>
-          <div className="mt-28 grid grid-cols-2 gap-20">
-            <img src="/images/hero.svg" alt="hero" className="block" />
-            <div className="self-center">
-              <h1 className="font-inter text-4xl font-black text-white">
-                <span className="block">Select from 100s of</span>{" "}
-                <span className="block">Tokens!</span>
-              </h1>
-              <p className="mt-8 w-2/3 font-display text-lg font-normal leading-5 text-white opacity-60">
-                Subscribe to various tokens and get informed on latest news and
-                statistics on your favourite protocols
-              </p>
+          {!token ? (
+            <div className="mt-28 grid grid-cols-2 gap-20">
+              <img src="/images/hero.svg" alt="hero" className="block" />
+              <div className="self-center">
+                <h1 className="font-inter text-4xl font-black text-white">
+                  <span className="block">Select from 100s of</span>{" "}
+                  <span className="block">Tokens!</span>
+                </h1>
+                <p className="mt-8 w-2/3 font-display text-lg font-normal leading-5 text-white opacity-60">
+                  Subscribe to various tokens and get informed on latest news
+                  and statistics on your favourite protocols
+                </p>
+              </div>
             </div>
-          </div>
+          ) : (
+            <div className="mt-28">
+              <div className="flex justify-between">
+                <h1 className="font-display text-2xl font-bold text-white">
+                  Select your Tokens !
+                </h1>
+                <div className="flex">&nbsp;</div>
+              </div>
+              <div className="mt-14 grid grid-cols-4 gap-5">
+                {data &&
+                  data?.map(
+                    (token) =>
+                      token.image && (
+                        <TokenCard
+                          id={token.id}
+                          key={token.id}
+                          image={token.image}
+                          name={token.name}
+                          symbol={token.symbol}
+                        />
+                      )
+                  )}
+              </div>
+            </div>
+          )}
         </div>
       </main>
     </>

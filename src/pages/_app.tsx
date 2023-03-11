@@ -3,6 +3,9 @@ import { api } from "~/utils/api";
 import "~/styles/globals.css";
 import { RainbowConfigWrapper } from "~/components/layout/RainbowConfigWrapper";
 import { Inter, Montserrat } from "@next/font/google";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+
+const queryClient = new QueryClient();
 
 const inter = Inter({
   subsets: ["latin"],
@@ -26,7 +29,9 @@ const MyApp: AppType = ({ Component, pageProps }) => {
         }
       `}</style>
       <RainbowConfigWrapper>
-        <Component {...pageProps} />
+        <QueryClientProvider client={queryClient}>
+          <Component {...pageProps} />
+        </QueryClientProvider>
       </RainbowConfigWrapper>
     </>
   );
