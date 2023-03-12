@@ -1,6 +1,6 @@
 import { useQuery, type QueryObserverResult } from "@tanstack/react-query";
 import { type Coin } from "types/coin";
-import TokenCard from "../tokenCard/TokenCard";
+import TokenCard from "../tokenCard";
 
 const TokenList = ({ query }: { query?: string }) => {
   const searchCoins = async () => {
