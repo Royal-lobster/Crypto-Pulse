@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { useState } from "react";
+import { api } from "~/utils/api";
 
 type TokenCardProps = {
   id: string;
@@ -13,14 +14,24 @@ type TokenCardProps = {
   symbol: string;
 };
 
-const TokenCard = ({ image, name, symbol, thumb }: TokenCardProps) => {
+const TokenCard = ({ image, name, symbol, thumb, id }: TokenCardProps) => {
   const [isChecked, setIsChecked] = useState(false);
+  const { mutate: mutateRemove } = api.token.removeToken.useMutation();
+  const { mutate: mutateAdd } = api.token.addToken.useMutation();
+
+  const handleTokenClick = () => {
+    setIsChecked(!isChecked);
+    if (isChecked) {
+      mutateRemove({ tokenId: id });
+    }
+    if (!isChecked) {
+      mutateAdd({ tokenId: id, tickerId: symbol });
+    }
+  };
 
   return (
     <div
-      onClick={() => {
-        setIsChecked(!isChecked);
-      }}
+      onClick={handleTokenClick}
       data-checked={isChecked || undefined}
       className="flex cursor-pointer items-center rounded-xl py-2.5 px-4 outline-[#5d5f62] hover:shadow-lg hover:outline data-[checked]:bg-[#3D4045]"
     >
