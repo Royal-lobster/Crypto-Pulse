@@ -4,9 +4,11 @@ import AllTokens from "~/components/Landing/AllTokens";
 import Hero from "~/components/Landing/Hero";
 import Navbar from "~/components/navbar/Navbar";
 import { useCheckWeb3Token } from "~/hooks/useWeb3Token";
+import { useIsMutating } from "@tanstack/react-query";
 
 const Home: NextPage = () => {
   const { token } = useCheckWeb3Token();
+  const isFetching = useIsMutating();
 
   return (
     <>
@@ -24,6 +26,7 @@ const Home: NextPage = () => {
           }}
         ></div>
         <Navbar />
+        <h1 className="text-4xl">Total number of fetches: {isFetching}</h1>
         <div className="relative z-10 mx-auto mt-20 max-w-7xl">
           <div className="grid grid-cols-2 gap-20">
             <div className="col-span-2 self-center sm:col-span-1">
