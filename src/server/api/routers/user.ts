@@ -5,16 +5,17 @@ import { UserModel } from "prisma/zod";
 
 export const userRouter = createTRPCRouter({
   registerUser: protectedProcedure
-    .input(z.object({ tokenId: z.string() }))
     .output(z.void())
     .mutation(async ({ ctx }) => {
-      const hiIQ = await getUserHiIQValue(ctx.userAddress);
+      const { userAddress } = ctx;
+      const hiIQ = (await getUserHiIQValue(userAddress)) || 0;
 
-      await ctx.prisma.user.upsert({
-        where: { id: ctx.userAddress },
-        update: {},
-        create: { id: ctx.userAddress, hiIQ },
-      });
+      if (userAddress)
+        await ctx.prisma.user.upsert({
+          where: { id: userAddress },
+          update: {},
+          create: { id: userAddress, hiIQ },
+        });
     }),
   getUser: protectedProcedure
     .output(z.nullable(UserModel))

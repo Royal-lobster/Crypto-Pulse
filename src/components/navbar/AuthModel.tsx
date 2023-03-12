@@ -24,11 +24,11 @@ const AuthTokenGhost = ({
 }: {
   setIsClicked: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
-  const { error } = useWeb3Token();
+  const { error, token } = useWeb3Token();
 
   useEffect(() => {
-    if (error) setIsClicked(false);
-  }, [error, setIsClicked]);
+    if (error || token) setIsClicked(false);
+  }, [error, setIsClicked, token]);
 
   return null;
 };

@@ -8,6 +8,7 @@ import { httpBatchLink, loggerLink } from "@trpc/client";
 import { createTRPCNext } from "@trpc/next";
 import { type inferRouterInputs, type inferRouterOutputs } from "@trpc/server";
 import superjson from "superjson";
+import { useTokenStore } from "~/hooks/useWeb3Token";
 
 import { type AppRouter } from "~/server/api/root";
 
@@ -41,6 +42,10 @@ export const api = createTRPCNext<AppRouter>({
         }),
         httpBatchLink({
           url: `${getBaseUrl()}/api/trpc`,
+          headers() {
+            const token = useTokenStore.getState().token || "";
+            return token ? { ["x-auth-token"]: token } : {};
+          },
         }),
       ],
     };
