@@ -6,6 +6,7 @@ import { useCheckWeb3Token } from "~/hooks/useWeb3Token";
 import { useIsMutating } from "@tanstack/react-query";
 import { useRouter } from "next/router";
 import { useAccount } from "wagmi";
+import { currentDate } from "~/utils/getCurrentDate";
 
 const Home: NextPage = () => {
   const { token } = useCheckWeb3Token();
@@ -37,9 +38,8 @@ const Home: NextPage = () => {
             </div>
             <div className="col-span-1 rounded-xl bg-[#1A1B1F] p-10 drop-shadow-xl">
               <p className="text-white opacity-60">Briefing for</p>
-              <h1 className="mt-2 font-display text-5xl font-black text-white">
-                <span className="block">5th March</span>
-                <span className="block">2023</span>
+              <h1 className="mt-2 w-[80%] font-display text-5xl font-black text-white">
+                {currentDate(Date.now())}
               </h1>
               <div className="flex justify-end">
                 <button
@@ -60,7 +60,7 @@ const Home: NextPage = () => {
               </div>
             </div>
           </div>
-          {!token && !isConnected ? <Hero /> : <AllTokens />}
+          {!isConnected ? <Hero /> : <AllTokens />}
         </div>
       </main>
     </>
