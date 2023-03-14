@@ -5,6 +5,7 @@ import { useCheckWeb3Token } from "~/hooks/useWeb3Token";
 import AuthModel from "./AuthModel";
 import { api } from "~/utils/api";
 import { useEffect } from "react";
+import Link from "next/link";
 
 const Navbar = () => {
   const { isConnected } = useAccount();
@@ -22,7 +23,9 @@ const Navbar = () => {
   return (
     <>
       <nav className="relative z-10 flex w-full basis-full items-center justify-between pt-5 pr-5">
-        <CryptoCurrentLogo />
+        <Link href="/">
+          <CryptoCurrentLogo />
+        </Link>
         <ConnectButton chainStatus="icon" />
       </nav>
       {!token && isConnected && <AuthModel />}
