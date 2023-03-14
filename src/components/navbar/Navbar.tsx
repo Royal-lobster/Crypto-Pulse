@@ -20,11 +20,13 @@ const Navbar = () => {
   }, [address, mutateAsync, token]);
 
   return (
-    <nav className="relative z-10 flex w-full basis-full items-center justify-between pt-5 pr-5">
-      <CryptoCurrentLogo />
-      <ConnectButton chainStatus="icon" />
+    <>
+      <nav className="relative z-10 flex w-full basis-full items-center justify-between pt-5 pr-5">
+        <CryptoCurrentLogo />
+        <ConnectButton chainStatus="icon" />
+      </nav>
       {!token && isConnected && <AuthModel />}
-    </nav>
+    </>
   );
 };
 

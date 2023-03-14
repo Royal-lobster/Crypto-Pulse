@@ -4,6 +4,7 @@ import "~/styles/globals.css";
 import { RainbowConfigWrapper } from "~/components/layout/RainbowConfigWrapper";
 import { Inter, Montserrat } from "@next/font/google";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import Layout from "~/components/layout/Layout";
 
 const queryClient = new QueryClient();
 
@@ -30,7 +31,9 @@ const MyApp: AppType = ({ Component, pageProps }) => {
       `}</style>
       <RainbowConfigWrapper>
         <QueryClientProvider client={queryClient}>
-          <Component {...pageProps} />
+          <Layout>
+            <Component {...pageProps} />
+          </Layout>
         </QueryClientProvider>
       </RainbowConfigWrapper>
     </>
