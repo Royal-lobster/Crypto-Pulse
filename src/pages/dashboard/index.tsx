@@ -40,14 +40,15 @@ const Dashboard = () => {
         </div>
       </div>
       <div className="relative mt-16 h-[200vh] pb-20">
-        <div className="absolute left-[50px] flex flex-col items-center justify-center  rounded-xl border border-[#434447] py-5 px-2.5">
-          <div className="flex flex-col items-center justify-center gap-4 pt-5 text-[#ffffff7a]">
+        <div className="absolute left-[50px] flex flex-col items-center justify-center  rounded-xl border border-[#434447] py-5 ">
+          <div className="flex flex-col items-center justify-center gap-4 px-2.5 pt-5 text-[#ffffff7a]">
             <div className="rotate-[270deg] text-xs uppercase">
               <p>GO TO</p>
             </div>
             <ArrowDown />
           </div>
-          <div className="flex flex-col gap-3 pt-4">
+          <div className=" mt-3 h-[0px] w-full flex-grow border border-[#434447]" />
+          <div className="flex flex-col gap-3 px-2.5 pt-4">
             <Image
               src="/images/dummy.png"
               alt="dummy"
@@ -78,7 +79,8 @@ const Dashboard = () => {
             />
           </div>
         </div>
-        <div className="z-10 mx-auto mt-20 flex max-w-7xl gap-[50px] pl-[70px]">
+
+        <div className="z-10 mx-auto mt-20 flex max-w-7xl gap-[50px] pl-[70px] pb-20">
           <div className="grid gap-10">
             <NewsCard />
             <NewsCard />
