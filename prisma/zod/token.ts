@@ -6,6 +6,7 @@ export const TokenModel = z.object({
   ticker: z.string(),
   createdAt: z.date(),
   updatedAt: z.date(),
+  image: z.string(),
 })
 
 export interface CompleteToken extends z.infer<typeof TokenModel> {

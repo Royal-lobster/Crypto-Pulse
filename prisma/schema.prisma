@@ -39,6 +39,7 @@ model Token {
     ticker     String       @unique
     createdAt  DateTime     @default(now())
     updatedAt  DateTime     @updatedAt
+    image      String
     news       News[] // One token can have many news
     statistics Statistics[]
     users      User[] // One token can be owned by many users
