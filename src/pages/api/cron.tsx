@@ -16,7 +16,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   });
 
   const tokenIds = tokensToBeUpdated.map((token) => token.id);
-  const tokenTickers = tokensToBeUpdated.map((token) => token.ticker as string);
+  const tokenTickers = tokensToBeUpdated.map((token) => token.ticker);
 
   console.log("🪵 Tokens to be updated: ", tokenTickers);
 
