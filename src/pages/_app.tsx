@@ -22,11 +22,6 @@ const montserrat = Montserrat({
 
 const MyApp: AppType = ({ Component, pageProps }) => {
   return (
-<<<<<<< HEAD
-    <RainbowConfigWrapper>
-      <Component {...pageProps} />
-    </RainbowConfigWrapper>
-=======
     <>
       <style jsx global>{`
         :root {
@@ -42,7 +37,6 @@ const MyApp: AppType = ({ Component, pageProps }) => {
         </QueryClientProvider>
       </RainbowConfigWrapper>
     </>
->>>>>>> 9249d4732d4a7d4527fc7b8245029771c0f5d6c7
   );
 };
 
