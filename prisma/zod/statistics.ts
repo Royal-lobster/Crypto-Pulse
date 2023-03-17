@@ -12,7 +12,7 @@ export const StatisticsModel = z.object({
 })
 
 export interface CompleteStatistics extends z.infer<typeof StatisticsModel> {
-  Token: CompleteToken
+  Token?: CompleteToken | null
 }
 
 /**
@@ -21,5 +21,5 @@ export interface CompleteStatistics extends z.infer<typeof StatisticsModel> {
  * NOTE: Lazy required in case of potential circular dependencies within schema
  */
 export const RelatedStatisticsModel: z.ZodSchema<CompleteStatistics> = z.lazy(() => StatisticsModel.extend({
-  Token: RelatedTokenModel,
+  Token: RelatedTokenModel.nullish(),
 }))

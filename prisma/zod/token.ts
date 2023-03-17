@@ -7,11 +7,12 @@ export const TokenModel = z.object({
   createdAt: z.date(),
   updatedAt: z.date(),
   image: z.string(),
+  statisticsId: z.string().nullish(),
 })
 
 export interface CompleteToken extends z.infer<typeof TokenModel> {
   news: CompleteNews[]
-  statistics: CompleteStatistics[]
+  statistics?: CompleteStatistics | null
   users: CompleteUser[]
   TokenNews: CompleteTokenNews[]
 }
@@ -23,7 +24,7 @@ export interface CompleteToken extends z.infer<typeof TokenModel> {
  */
 export const RelatedTokenModel: z.ZodSchema<CompleteToken> = z.lazy(() => TokenModel.extend({
   news: RelatedNewsModel.array(),
-  statistics: RelatedStatisticsModel.array(),
+  statistics: RelatedStatisticsModel.nullish(),
   users: RelatedUserModel.array(),
   TokenNews: RelatedTokenNewsModel.array(),
 }))
