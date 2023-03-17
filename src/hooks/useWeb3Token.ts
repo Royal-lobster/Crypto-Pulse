@@ -1,3 +1,4 @@
+import { type Token, type User } from "@prisma/client";
 import React, { useCallback } from "react";
 import { useSigner } from "wagmi";
 import { sign, verify } from "web3-token";

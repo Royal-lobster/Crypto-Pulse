@@ -1,11 +1,11 @@
-import "@rainbow-me/rainbowkit/styles.css";
 import {
+  darkTheme,
   getDefaultWallets,
-  lightTheme,
   RainbowKitProvider,
 } from "@rainbow-me/rainbowkit";
+import "@rainbow-me/rainbowkit/styles.css";
 import { configureChains, createClient, WagmiConfig } from "wagmi";
-import { mainnet, polygon, optimism, arbitrum } from "wagmi/chains";
+import { arbitrum, mainnet, optimism, polygon } from "wagmi/chains";
 import { publicProvider } from "wagmi/providers/public";
 
 const { chains, provider } = configureChains(
@@ -14,11 +14,11 @@ const { chains, provider } = configureChains(
 );
 
 const { connectors } = getDefaultWallets({
-  appName: "My RainbowKit App",
+  appName: "Crypto Currents",
   chains,
 });
 
-export const wagmiClient = createClient({
+const wagmiClient = createClient({
   autoConnect: true,
   connectors,
   provider,
@@ -32,7 +32,7 @@ export const RainbowConfigWrapper = ({
   return (
     <WagmiConfig client={wagmiClient}>
       <RainbowKitProvider
-        theme={lightTheme({
+        theme={darkTheme({
           accentColor: "#da5597",
           accentColorForeground: "white",
           borderRadius: "small",
