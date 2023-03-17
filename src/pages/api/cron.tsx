@@ -20,6 +20,12 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     select: { ticker: true, id: true },
   });
 
+  if (tokensToBeUpdated.length === 0) {
+    console.log("🎉 No tokens to be updated!");
+    res.status(200).json({ message: "No tokens to be updated!" });
+    return;
+  }
+
   const tokenIds = tokensToBeUpdated.map((token) => token.id);
   const tokenTickers = tokensToBeUpdated.map((token) => token.ticker);
 
