@@ -1,79 +1,71 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
-    provider = "prisma-client-js"
+  provider = "prisma-client-js"
 }
 
 generator zod {
-    provider              = "zod-prisma"
-    output                = "./zod" // (default) the directory where generated zod schemas will be saved
-    relationModel         = true // (default) Create and export both plain and related models.
-    // relationModel         = "default" // Do not export model without relations.
-    // relationModel         = false // Do not generate related model
-    modelCase             = "PascalCase" // (default) Output models using pascal case (ex. UserModel, PostModel)
-    // modelCase             = "camelCase" // Output models using camel case (ex. userModel, postModel)
-    modelSuffix           = "Model" // (default) Suffix to apply to your prisma models when naming Zod schemas
-    // useDecimalJs          = false // (default) represent the prisma Decimal type using as a JS number
-    useDecimalJs          = true // represent the prisma Decimal type using Decimal.js (as Prisma does)
-    // https://www.prisma.io/docs/concepts/components/prisma-client/working-with-fields/working-with-json-fields#filtering-by-null-values
-    prismaJsonNullability = true // (default) uses prisma's scheme for JSON field nullability
-    // prismaJsonNullability = false // allows null assignment to optional JSON fields
+  provider              = "zod-prisma"
+  output                = "./zod"
+  relationModel         = true
+  modelCase             = "PascalCase"
+  modelSuffix           = "Model"
+  useDecimalJs          = true
+  prismaJsonNullability = true
 }
 
 datasource db {
-    provider = "postgresql"
-    url      = env("DATABASE_URL")
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 model User {
-    id        String   @id
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
-    tokens    Token[] // One user can have many tokens
-    hiIQ      Float
+  id        String   @id
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  tokens    Token[]
+  hiIQ      Float
 }
 
 model Token {
-    id         String       @id
-    ticker     String       @unique
-    createdAt  DateTime     @default(now())
-    updatedAt  DateTime     @updatedAt
-    image      String
-    news       News[] // One token can have many news
-    statistics Statistics[]
-    users      User[] // One token can be owned by many users
-    TokenNews  TokenNews[]
+  id           String      @id
+  ticker       String      @unique
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+  image        String
+  news         News[]
+  statistics   Statistics? @relation(fields: [statisticsId], references: [id], onDelete: Cascade)
+  statisticsId String?     @unique
+  users        User[]
+  TokenNews    TokenNews[]
 }
 
 model News {
-    id        String      @id
-    createdAt DateTime    @default(now())
-    title     String
-    content   String
-    image     String
-    tokens    Token[] // One news can belong to many tokens
-    TokenNews TokenNews[]
+  id        String      @id
+  createdAt DateTime    @default(now())
+  title     String
+  content   String
+  image     String
+  tokens    Token       @relation(fields: [tokenId], references: [id])
+  TokenNews TokenNews[]
+  tokenId   String
 }
 
-// New model that represents the intermediate table
 model TokenNews {
-    id      String @id
-    token   Token  @relation(fields: [tokenId], references: [id])
-    tokenId String
-    news    News   @relation(fields: [newsId], references: [id])
-    newsId  String
+  id      String @id
+  token   Token  @relation(fields: [tokenId], references: [id])
+  tokenId String
+  news    News   @relation(fields: [newsId], references: [id])
+  newsId  String
 
-    @@unique([tokenId, newsId])
+  @@unique([tokenId, newsId])
 }
 
 model Statistics {
-    id              String   @id
-    createdAt       DateTime @default(now())
-    updatedAt       DateTime @updatedAt
-    dayLowestPrice  Float
-    dayHighestPrice Float
-    dayVolume       Float
-    Token           Token    @relation(fields: [tokenId], references: [id])
-    tokenId         String   @unique
+  id              String   @id
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  dayLowestPrice  Float
+  dayHighestPrice Float
+  dayVolume       Float
+  tokenId         String   @unique
+  Token           Token?
 }
