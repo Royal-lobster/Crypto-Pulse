@@ -8,9 +8,14 @@ const prisma = new PrismaClient();
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const tokensToBeUpdated = await prisma.token.findMany({
     where: {
-      updatedAt: {
-        gte: new Date(new Date().getTime() - 24 * 60 * 60 * 1000),
-      },
+      OR: [
+        {
+          lastRefresh: {
+            lte: new Date(new Date().getTime() - 24 * 60 * 60 * 1000),
+          },
+        },
+        { lastRefresh: null },
+      ],
     },
     select: { ticker: true, id: true },
   });
@@ -18,32 +23,40 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const tokenIds = tokensToBeUpdated.map((token) => token.id);
   const tokenTickers = tokensToBeUpdated.map((token) => token.ticker);
 
-  console.log("🪵 Tokens to be updated: ", tokenTickers);
-
-  const tokensUpdated = await Promise.all(
+  console.log(
+    `\n📊 Fetching statistics data for ${tokenTickers.join(", ")}...\n`
+  );
+  const statisticsData = await Promise.all(
     tokenIds.map(async (tokenId) => {
-      const statsData = await getPastDayData(tokenId, "usd", 1);
-      console.log("🪵 Stats data: ", { token: tokenId, ...statsData });
-      const { id } = await prisma.statistics.upsert({
-        where: { tokenId },
-        update: {},
-        create: {
-          tokenId,
-          id: tokenId,
-          dayHighestPrice: statsData.pastDayHighestPrice,
-          dayLowestPrice: statsData.pastDayLowestPrice,
-          dayVolume: statsData.pastDayTotalVolume,
-        },
-      });
-      return id;
+      return await getPastDayData(tokenId, "usd", 1);
     })
   );
 
-  const newsData = (await getPastDayNews(tokenTickers, 1)).filter(Boolean);
+  const newsData = await getPastDayNews(tokenTickers, 1);
 
+  console.log("📼 Writing data to DB...");
   if (newsData && newsData.length > 0) {
-    await prisma.$transaction(
-      newsData.map((news) =>
+    const result = await prisma.$transaction([
+      ...statisticsData.map((statistic) =>
+        prisma.statistics.upsert({
+          where: { id: statistic.coinId },
+          update: {
+            id: statistic.coinId,
+            dayHighestPrice: statistic.pastDayHighestPrice,
+            dayLowestPrice: statistic.pastDayLowestPrice,
+            dayVolume: statistic.pastDayTotalVolume,
+            tokenId: statistic.coinId,
+          },
+          create: {
+            id: statistic.coinId,
+            dayHighestPrice: statistic.pastDayHighestPrice,
+            dayLowestPrice: statistic.pastDayLowestPrice,
+            dayVolume: statistic.pastDayTotalVolume,
+            tokenId: statistic.coinId,
+          },
+        })
+      ),
+      ...newsData.map((news) =>
         prisma.news.upsert({
           where: { id: news.url },
           update: {},
@@ -58,11 +71,15 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
             },
           },
         })
-      )
-    );
+      ),
+      prisma.token.updateMany({
+        where: { id: { in: tokenIds } },
+        data: { lastRefresh: new Date() },
+      }),
+    ]);
+    console.log("🎉 Data written to DB Successfully!");
+    res.status(200).json(result);
   }
-
-  res.status(200).json({ tokensToBeUpdated, tokensUpdated, newsData });
 };
 
 export default handler;
