@@ -36,6 +36,9 @@ export const dashboardRouter = createTRPCRouter({
             },
           },
         },
+        include: {
+          tokens: true,
+        },
       });
 
       // Find all stats related to those tokens
@@ -47,6 +50,6 @@ export const dashboardRouter = createTRPCRouter({
         },
       });
 
-      return { news, statistics };
+      return { news, statistics, tokens };
     }),
 });
