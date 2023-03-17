@@ -28,7 +28,7 @@ const TokenCard = ({ image, name, symbol, thumb, id }: TokenCardProps) => {
       mutateAdd({
         tokenId: id,
         tickerId: symbol,
-        tokenImg: image?.large || "",
+        tokenImg: image?.large as string,
       });
     }
   };
