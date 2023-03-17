@@ -25,7 +25,11 @@ const TokenCard = ({ image, name, symbol, thumb, id }: TokenCardProps) => {
       mutateRemove({ tokenId: id });
     }
     if (!isChecked) {
-      mutateAdd({ tokenId: id, tickerId: symbol });
+      mutateAdd({
+        tokenId: id,
+        tickerId: symbol,
+        tokenImg: image?.large || "",
+      });
     }
   };
 
