@@ -20,5 +20,10 @@ const config = {
     locales: ["en"],
     defaultLocale: "en",
   },
+
+  images: {
+    minimumCacheTTL: 31536000,
+    domains: ["assets.coingecko.com"],
+  },
 };
 export default config;
