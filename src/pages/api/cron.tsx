@@ -23,7 +23,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const tokensUpdated = await Promise.all(
     tokenIds.map(async (tokenId) => {
       const statsData = await getPastDayData(tokenId, "usd", 1);
-      console.log("🪵 Stats data: ", statsData);
+      console.log("🪵 Stats data: ", { token: tokenId, ...statsData });
       const { id } = await prisma.statistics.upsert({
         where: { tokenId },
         update: {},
@@ -39,9 +39,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     })
   );
 
-  console.log("🪵 Tokens updated: ", tokensUpdated);
-
-  const newsData = await getPastDayNews(tokenTickers, 1);
+  const newsData = (await getPastDayNews(tokenTickers, 1)).filter(Boolean);
 
   if (newsData && newsData.length > 0) {
     await prisma.$transaction(
@@ -51,12 +49,12 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           update: {},
           create: {
             title: news.title,
-            content: news.content || "",
+            content: news.summary || "",
             image: news.image || "",
             createdAt: news.createdAt,
             id: news.url,
             tokens: {
-              connect: news.coinIds?.map((coinId) => ({ id: coinId })),
+              connect: { ticker: news.ticker },
             },
           },
         })

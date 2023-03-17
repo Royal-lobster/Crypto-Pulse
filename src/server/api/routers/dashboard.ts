@@ -28,12 +28,8 @@ export const dashboardRouter = createTRPCRouter({
       // Find all news related to those tokens
       const news = await ctx.prisma.news.findMany({
         where: {
-          tokens: {
-            some: {
-              AND: tokens.map((token) => ({
-                id: token.id,
-              })),
-            },
+          tokenId: {
+            in: tokens.map((token) => token.id),
           },
         },
         include: {
