@@ -32,10 +32,11 @@ model Token {
   updatedAt    DateTime    @updatedAt
   image        String
   news         News[]
-  statistics   Statistics? @relation(fields: [statisticsId], references: [id], onDelete: Cascade)
   statisticsId String?     @unique
   users        User[]
   TokenNews    TokenNews[]
+  lastRefresh  DateTime?
+  Statistics   Statistics?
 }
 
 model News {
@@ -44,7 +45,7 @@ model News {
   title     String
   content   String
   image     String
-  tokens    Token       @relation(fields: [tokenId], references: [id])
+  tokens    Token       @relation(fields: [tokenId], references: [id], onDelete: Cascade)
   TokenNews TokenNews[]
   tokenId   String
 }
@@ -67,5 +68,5 @@ model Statistics {
   dayHighestPrice Float
   dayVolume       Float
   tokenId         String   @unique
-  Token           Token?
+  Token           Token?   @relation(fields: [tokenId], references: [id], onDelete: Cascade)
 }
