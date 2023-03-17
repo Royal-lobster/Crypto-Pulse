@@ -53,7 +53,7 @@ const TokenCard = ({ image, name, symbol, thumb, id }: TokenCardProps) => {
           <input
             type="checkbox"
             name="token"
-            defaultChecked={isChecked}
+            checked={isChecked}
             id="token"
             className="token-card-checkbox grid h-6 w-6 origin-bottom-left translate-y-[0.075em] appearance-none place-content-center rounded border-[#FFFBFB] bg-[#3D4045] font-[inherit] text-[currentColor] before:h-4 before:w-4 before:scale-0 before:bg-[CanvasText] before:shadow-[inset_1em_1em_#fff] before:transition before:ease-in-out before:content-[''] checked:bg-[#FF5CAA] checked:before:scale-100"
           />
