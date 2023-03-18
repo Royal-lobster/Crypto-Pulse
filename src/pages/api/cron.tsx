@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { getPastDayData } from "~/modules/getPastDayStatistics";
+import { getPastDayStats } from "~/modules/getPastDayStatistics";
 import { PrismaClient } from "@prisma/client";
 import { getPastDayNews } from "~/modules/getPastDayNews";
 
@@ -34,7 +34,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   );
   const statisticsData = await Promise.all(
     tokenIds.map(async (tokenId) => {
-      return await getPastDayData(tokenId, "usd", 1);
+      return await getPastDayStats(tokenId, "usd", 1);
     })
   );
 
@@ -68,7 +68,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           update: {},
           create: {
             title: news.title,
-            content: news.summary || "",
+            rawContent: news.rawContent,
             image: news.image || "",
             createdAt: news.createdAt,
             id: news.url,
