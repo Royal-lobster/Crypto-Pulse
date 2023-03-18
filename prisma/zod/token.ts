@@ -3,6 +3,7 @@ import { CompleteNews, RelatedNewsModel, CompleteUser, RelatedUserModel, Complet
 
 export const TokenModel = z.object({
   id: z.string(),
+  name: z.string(),
   ticker: z.string(),
   createdAt: z.date(),
   updatedAt: z.date(),

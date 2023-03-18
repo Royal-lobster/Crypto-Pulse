@@ -27,6 +27,7 @@ model User {
 
 model Token {
   id           String      @id
+  name         String
   ticker       String      @unique
   createdAt    DateTime    @default(now())
   updatedAt    DateTime    @updatedAt
