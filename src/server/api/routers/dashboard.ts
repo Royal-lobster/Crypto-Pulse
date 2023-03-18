@@ -35,20 +35,25 @@ export const dashboardRouter = createTRPCRouter({
     .input(z.object({ tokenId: z.string() }))
     .query(async ({ ctx, input }) => {
       const { tokenId } = input;
-      const { prisma } = ctx;
+      const { prisma, userAddress } = ctx;
 
+      // ======================
       // check if token is subscribed by user
-      const token = await prisma.tokenUser.findUnique({
-        where: { tokenId_userId: { tokenId, userId: ctx.userAddress } },
-        include: {
-          token: {
-            include: {
-              news: true,
-              Statistics: true,
+      // ======================
+      const token = (
+        await prisma.user.findUnique({
+          where: { id: userAddress },
+          select: {
+            tokens: {
+              where: { id: tokenId },
+              include: {
+                news: true,
+                Statistics: true,
+              },
             },
           },
-        },
-      });
+        })
+      )?.tokens[0];
 
       if (!token)
         throw new TRPCError({
@@ -56,15 +61,23 @@ export const dashboardRouter = createTRPCRouter({
           message: "User not subscribed to token",
         });
 
-      const lastRefresh = token.token.lastRefresh;
+      // ======================
+      // check if last refresh was less than 24 hours ago
+      // ======================
+
+      const lastRefresh = token.lastRefresh;
       const now = new Date();
 
       if (lastRefresh && now.getTime() - lastRefresh.getTime() <= 86400000) {
         return token;
       }
 
-      const stats = await getPastDayStats(token.token.id, "usd", 1);
-      const news = (await getPastDayNews([token.token.ticker], 1))[0];
+      // ======================
+      // fetch news and statistics
+      // ======================
+
+      const stats = await getPastDayStats(token.id, "usd", 1);
+      const news = (await getPastDayNews([token.ticker], 1))[0];
 
       if (!news)
         throw new TRPCError({
@@ -73,7 +86,7 @@ export const dashboardRouter = createTRPCRouter({
         });
 
       const updatedToken = await prisma.token.update({
-        where: { id: token.token.id },
+        where: { id: token.id },
         data: {
           lastRefresh: new Date(),
           news: {
@@ -103,21 +116,16 @@ export const dashboardRouter = createTRPCRouter({
 
       return updatedToken;
     }),
+
   getCondensedNews: protectedProcedure
     .input(z.object({ newsId: z.string() }))
     .mutation(async ({ ctx, input }) => {
       const { newsId } = input;
       const { prisma, userAddress } = ctx;
 
-      const token = await prisma.tokenUser.findUnique({
-        where: { tokenId_userId: { tokenId: newsId, userId: userAddress } },
-      });
-
-      if (!token)
-        throw new TRPCError({
-          code: "BAD_REQUEST",
-          message: "User not subscribed to token",
-        });
+      // ======================
+      // check if news exists
+      // ======================
 
       const news = await prisma.news.findUnique({
         where: { id: newsId },
@@ -130,12 +138,38 @@ export const dashboardRouter = createTRPCRouter({
         });
 
       if (news.content) return news.content;
-
       if (!news.rawContent)
         throw new TRPCError({
           code: "BAD_REQUEST",
           message: "News has no raw content",
         });
+
+      // ======================
+      // check if token is subscribed by user
+      // ======================
+      const tokenId = (
+        await prisma.news.findUnique({
+          where: { id: newsId },
+          select: { tokenId: true },
+        })
+      )?.tokenId;
+
+      const token = (
+        await prisma.user.findUnique({
+          where: { id: userAddress },
+          select: { tokens: { where: { id: tokenId } } },
+        })
+      )?.tokens[0];
+
+      if (!token)
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "User not subscribed to token",
+        });
+
+      // ======================
+      // get summary
+      // ======================
 
       const content = await getBananaSummary(news.rawContent);
 
