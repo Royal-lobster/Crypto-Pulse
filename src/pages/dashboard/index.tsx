@@ -6,6 +6,7 @@ import { api } from "~/utils/api";
 import { currentDate } from "~/utils/getCurrentDate";
 import { Tab } from "@headlessui/react";
 import DashboardNews from "~/components/dashboard/DashboardNews";
+import DashboardMainContent from "~/components/dashboard/DashboardMainContent";
 
 const Dashboard = () => {
   const { isLoading: tokensIsLoading, data: userSubsribedTokens } =
@@ -73,20 +74,10 @@ const Dashboard = () => {
                   </div>
                   <div className="h-[0px] flex-grow border border-[#434447]" />
                 </div>
-                <div className="z-10 mx-auto mt-20 flex max-w-7xl gap-[50px] pl-[70px] pb-20">
-                  <div className="grid flex-grow gap-10">
-                    <DashboardNews id={subscribedToken.id} />
-                  </div>
-                  <div className="relative">
-                    <StickyTokenCard
-                      tokenName={subscribedToken.Statistics?.tokenId}
-                      image={subscribedToken.image}
-                      dayHighest={subscribedToken.Statistics?.dayHighestPrice}
-                      dayLowest={subscribedToken.Statistics?.dayLowestPrice}
-                      totalVolume={subscribedToken.Statistics?.dayVolume}
-                    />
-                  </div>
-                </div>
+                <DashboardMainContent
+                  tokenImage={subscribedToken.image}
+                  tokenId={subscribedToken.id}
+                />
               </Tab.Panel>
             );
           })}
