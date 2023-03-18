@@ -1,5 +1,6 @@
 import { useQuery, type QueryObserverResult } from "@tanstack/react-query";
 import { type Coin } from "types/coin";
+import TokensLoader from "../loader/TokensLoader";
 import TokenCard from "../tokenCard";
 
 const TokenList = ({ query }: { query?: string }) => {
@@ -13,12 +14,17 @@ const TokenList = ({ query }: { query?: string }) => {
     return res.json();
   };
 
-  const { data }: QueryObserverResult<{ coins: Coin[] }, unknown> = useQuery({
-    queryKey: ["search"],
-    queryFn: searchCoins,
-  });
+  const ids = ["bitcoin", "ethereum", "tether"];
 
-  const coins = data?.coins;
+  const { data, isLoading }: QueryObserverResult<{ coins: Coin[] }, unknown> =
+    useQuery({
+      queryKey: ["search"],
+      queryFn: searchCoins,
+    });
+
+  if (isLoading && !data) return <TokensLoader />;
+
+  const coins = data?.coins.filter((coin) => !ids.includes(coin.id));
 
   return (
     <>

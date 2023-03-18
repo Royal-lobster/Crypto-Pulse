@@ -6,6 +6,7 @@ import { api } from "~/utils/api";
 import { useEffect } from "react";
 import Link from "next/link";
 import dynamic from "next/dynamic";
+import CustomConnectButton from "../Button/CustomConnectButton";
 
 const AuthModel = dynamic(() => import("./AuthModel"), {
   ssr: false,
@@ -30,7 +31,16 @@ const Navbar = () => {
         <Link href="/">
           <CryptoCurrentLogo />
         </Link>
-        <ConnectButton chainStatus="icon" />
+        <div className="flex items-center gap-4">
+          <a
+            target="_blank"
+            href="https://iq.braindao.org/dashboard/stake"
+            className="cursor-pointer rounded-xl bg-[#FF5CAA] py-2 px-4 font-display text-white"
+          >
+            🧠 Stake HiIQ
+          </a>
+          <CustomConnectButton address={address as string} />
+        </div>
       </nav>
       {!token && isConnected && <AuthModel />}
     </>
