@@ -7,18 +7,24 @@ export const tokenRouter = createTRPCRouter({
     .input(
       z.object({
         tokenId: z.string(),
+        tokenName: z.string(),
         tickerId: z.string(),
         tokenImg: z.string().url(),
       })
     )
     .output(z.void())
     .mutation(async ({ input, ctx }) => {
-      const { tokenId, tickerId, tokenImg } = input;
+      const { tokenId, tickerId, tokenImg, tokenName } = input;
 
       const token = await ctx.prisma.token.upsert({
         where: { id: tokenId },
         update: {},
-        create: { id: tokenId, ticker: tickerId, image: tokenImg },
+        create: {
+          id: tokenId,
+          ticker: tickerId,
+          image: tokenImg,
+          name: tokenName,
+        },
       });
 
       await ctx.prisma.user.update({
