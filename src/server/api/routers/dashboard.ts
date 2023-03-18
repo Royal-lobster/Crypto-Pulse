@@ -13,12 +13,7 @@ export const dashboardRouter = createTRPCRouter({
     const user = await prisma.user.findUnique({
       where: { id: userAddress },
       include: {
-        tokens: {
-          include: {
-            news: true,
-            Statistics: true,
-          },
-        },
+        tokens: true,
       },
     });
 
