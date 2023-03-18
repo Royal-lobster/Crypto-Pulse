@@ -48,6 +48,8 @@ const Home: NextPage = () => {
               </h1>
               <div className="flex justify-end">
                 <button
+                  disabled={isFetching > 0}
+                  data-disabled={isFetching > 0 || undefined}
                   onClick={() => {
                     router
                       .push("/dashboard")
@@ -58,7 +60,7 @@ const Home: NextPage = () => {
                         console.error(error);
                       });
                   }}
-                  className="cursor-pointer rounded-xl bg-[#FF5CAA] py-4 px-8 font-display text-white"
+                  className="cursor-pointer rounded-xl bg-[#FF5CAA] py-4 px-8 font-display text-white data-[disabled]:bg-[#A44D76]"
                 >
                   Check the Area
                 </button>

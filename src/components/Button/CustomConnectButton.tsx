@@ -97,7 +97,11 @@ const CustomConnectButton = ({ address }: { address: string }) => {
             {(() => {
               if (!connected) {
                 return (
-                  <button onClick={openConnectModal} type="button">
+                  <button
+                    onClick={openConnectModal}
+                    type="button"
+                    className="cursor-pointer rounded-xl bg-[#FF5CAA] py-2 px-4 font-display text-white"
+                  >
                     Connect Wallet
                   </button>
                 );
@@ -105,7 +109,11 @@ const CustomConnectButton = ({ address }: { address: string }) => {
 
               if (chain.unsupported) {
                 return (
-                  <button onClick={openChainModal} type="button">
+                  <button
+                    onClick={openChainModal}
+                    type="button"
+                    className="cursor-pointer rounded-xl bg-[#FF5CAA] py-2 px-4 font-display text-white"
+                  >
                     Wrong network
                   </button>
                 );

@@ -1,19 +1,31 @@
 import Image from "next/image";
 
-const StickyTokenCard = () => {
+const StickyTokenCard = ({
+  image,
+  tokenName,
+  totalVolume,
+  dayHighest,
+  dayLowest,
+}: {
+  image?: string;
+  tokenName?: string;
+  totalVolume?: number;
+  dayHighest?: number;
+  dayLowest?: number;
+}) => {
   return (
     <div className="sticky top-5 z-50">
       <div className="min-h-[400px] w-[300px] shrink-0 rounded-xl bg-[#3D4045] py-7 shadow-xl">
         <div className="flex flex-col items-center justify-center">
           <Image
-            src="/images/dummy.png"
-            alt="dummy"
+            src={image as string}
+            alt={tokenName as string}
             width={88}
             height={88}
             className="h-[88px] w-[88px]"
           />
           <h1 className="mt-4 font-display text-2xl font-bold text-white">
-            Bitcoin
+            {tokenName}
           </h1>
         </div>
         <div className="my-6 h-[0px] w-full flex-grow border border-[#ffffff1a]" />
@@ -24,7 +36,7 @@ const StickyTokenCard = () => {
                 Day Highest
               </h1>
               <p className="mt-1.5 text-center font-display font-extrabold text-white">
-                $23045.34
+                {dayHighest}
               </p>
             </div>
             <div className="">
@@ -32,7 +44,7 @@ const StickyTokenCard = () => {
                 Day Lowest
               </h1>
               <p className="mt-1.5 text-center font-display font-extrabold text-white">
-                $23015.38
+                {dayLowest}
               </p>
             </div>
           </div>
@@ -41,7 +53,7 @@ const StickyTokenCard = () => {
               Total Volume
             </h1>
             <p className="mt-1.5 font-display font-extrabold text-white">
-              $23346466015.38
+              {totalVolume}
             </p>
           </div>
         </div>

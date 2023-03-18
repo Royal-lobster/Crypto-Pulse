@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "../trpc";
-import { getUserHiIQValue } from "~/utils/getUserHiIQValue";
+import { getUserHiIQBalance } from "~/utils/getUserHiIQValue";
 import { TokenModel, UserModel } from "prisma/zod";
 
 export const userRouter = createTRPCRouter({
@@ -8,7 +8,7 @@ export const userRouter = createTRPCRouter({
     .output(UserModel.extend({ tokens: z.array(TokenModel) }))
     .mutation(async ({ ctx }) => {
       const { userAddress } = ctx;
-      const hiIQ = (await getUserHiIQValue(userAddress)) || 0;
+      const hiIQ = (await getUserHiIQBalance(userAddress)) || 0;
 
       const user = await ctx.prisma.user.upsert({
         where: { id: userAddress },

@@ -1,4 +1,3 @@
-import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { useAccount } from "wagmi";
 import CryptoCurrentLogo from "~/Icons/Logo";
 import { useCheckWeb3Token } from "~/hooks/useWeb3Token";
@@ -32,13 +31,15 @@ const Navbar = () => {
           <CryptoCurrentLogo />
         </Link>
         <div className="flex items-center gap-4">
-          <a
-            target="_blank"
-            href="https://iq.braindao.org/dashboard/stake"
-            className="cursor-pointer rounded-xl bg-[#FF5CAA] py-2 px-4 font-display text-white"
-          >
-            🧠 Stake HiIQ
-          </a>
+          {isConnected && (
+            <a
+              target="_blank"
+              href="https://iq.braindao.org/dashboard/stake"
+              className="cursor-pointer rounded-xl bg-[#FF5CAA] py-2 px-4 font-display text-white"
+            >
+              🧠 Stake HiIQ
+            </a>
+          )}
           <CustomConnectButton address={address as string} />
         </div>
       </nav>

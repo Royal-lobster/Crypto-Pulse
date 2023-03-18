@@ -5,7 +5,7 @@ import TokensLoader from "../loader/TokensLoader";
 import TokenCard from "../tokenCard";
 
 const SelectToken = () => {
-  const userData = api.user.getUser.useQuery();
+  const { data: userData } = api.dashboard.getUserSubscribedTokens.useQuery();
 
   const getCoins = async () => {
     const res = await fetch("https://api.coingecko.com/api/v3/coins/");
@@ -13,21 +13,22 @@ const SelectToken = () => {
     return res.json();
   };
 
-  const ids = ["bitcoin", "ethereum", "tether"];
+  const { data: coins, isLoading }: QueryObserverResult<Coin[], unknown> =
+    useQuery({
+      queryKey: ["coins"],
+      queryFn: getCoins,
+    });
 
-  const { data, isLoading }: QueryObserverResult<Coin[], unknown> = useQuery({
-    queryKey: ["coins"],
-    queryFn: getCoins,
-  });
+  if (isLoading && !coins && !userData) return <TokensLoader />;
 
-  if (isLoading && !data) return <TokensLoader />;
-
-  const filteredData = data?.filter((coin) => !ids.includes(coin.id));
+  const filteredCoins = coins?.filter(
+    (coin) => !userData?.some((token) => token.id === coin.id)
+  );
 
   return (
     <div className="mt-14 grid grid-cols-4 gap-5">
-      {filteredData &&
-        filteredData
+      {filteredCoins &&
+        filteredCoins
           ?.slice(0, 24)
           .map(
             (token) =>
