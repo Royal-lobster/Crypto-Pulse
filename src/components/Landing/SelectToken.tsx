@@ -13,13 +13,13 @@ const SelectToken = () => {
     return res.json();
   };
 
-  const { data: coins, isLoading }: QueryObserverResult<Coin[], unknown> =
+  const { data: coins, isFetching }: QueryObserverResult<Coin[], unknown> =
     useQuery({
       queryKey: ["coins"],
       queryFn: getCoins,
     });
 
-  if (isLoading && !coins && !userData) return <TokensLoader />;
+  if (isFetching && !coins && !userData) return <TokensLoader />;
 
   const filteredCoins = coins?.filter(
     (coin) => !userData?.some((token) => token.id === coin.id)

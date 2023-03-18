@@ -1,16 +1,19 @@
-import { api } from "~/utils/api";
-// import NewsCard from "../Card/NewsCard";
+import { type News } from "@prisma/client";
+import NewsCard from "../Card/NewsCard";
 
-const DashboardNews = ({ id }: { id: string }) => {
-  const { data, isLoading } = api.dashboard.getNewsAndStatistics.useQuery({
-    tokenId: id,
-  });
-
-  console.log(isLoading);
-
-  console.log(data);
-
-  return <div className="box">&nbsp;</div>;
+const DashboardNews = ({ news }: { news: News[] }) => {
+  return (
+    <div className="grid gap-5">
+      {news.map((dashboardNews) => (
+        <NewsCard
+          key={dashboardNews.id}
+          title={dashboardNews.title}
+          date={dashboardNews.createdAt}
+          description={dashboardNews.description as string}
+        />
+      ))}
+    </div>
+  );
 };
 
 export default DashboardNews;

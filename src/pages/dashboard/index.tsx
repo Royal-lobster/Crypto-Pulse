@@ -1,11 +1,9 @@
 import Image from "next/image";
-import StickyTokenCard from "~/components/Card/StickyTokenCard";
 import ArrowDown from "~/components/Icons/ArrowDown";
 import DashboardLoader from "~/components/loader/DashboardLoader";
 import { api } from "~/utils/api";
 import { currentDate } from "~/utils/getCurrentDate";
 import { Tab } from "@headlessui/react";
-import DashboardNews from "~/components/dashboard/DashboardNews";
 import DashboardMainContent from "~/components/dashboard/DashboardMainContent";
 
 const Dashboard = () => {
@@ -13,6 +11,13 @@ const Dashboard = () => {
     api.dashboard.getUserSubscribedTokens.useQuery();
 
   if (tokensIsLoading && !userSubsribedTokens) return <DashboardLoader />;
+
+  if (userSubsribedTokens?.length === 0)
+    return (
+      <div className="flex min-h-[calc(100vh-90px)] flex-col items-center justify-center text-[#8C8C8C]">
+        <p className="mt-2 font-display text-2xl">No Data Found</p>
+      </div>
+    );
 
   return (
     <>

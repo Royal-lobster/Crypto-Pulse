@@ -29,6 +29,7 @@ const TokenCard = ({ image, name, symbol, thumb, id }: TokenCardProps) => {
         tokenId: id,
         tickerId: symbol,
         tokenImg: image?.large as string,
+        tokenName: name,
       });
     }
   };

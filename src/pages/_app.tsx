@@ -29,13 +29,15 @@ const MyApp: AppType = ({ Component, pageProps }) => {
           --inter-font: ${inter.style.fontFamily};
         }
       `}</style>
-      <RainbowConfigWrapper>
-        <QueryClientProvider client={queryClient}>
-          <Layout>
-            <Component {...pageProps} />
-          </Layout>
-        </QueryClientProvider>
-      </RainbowConfigWrapper>
+      <div className={montserrat.className}>
+        <RainbowConfigWrapper>
+          <QueryClientProvider client={queryClient}>
+            <Layout>
+              <Component {...pageProps} />
+            </Layout>
+          </QueryClientProvider>
+        </RainbowConfigWrapper>
+      </div>
     </>
   );
 };
