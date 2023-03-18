@@ -2,10 +2,14 @@ import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { useAccount } from "wagmi";
 import CryptoCurrentLogo from "~/Icons/Logo";
 import { useCheckWeb3Token } from "~/hooks/useWeb3Token";
-import AuthModel from "./AuthModel";
 import { api } from "~/utils/api";
 import { useEffect } from "react";
 import Link from "next/link";
+import dynamic from "next/dynamic";
+
+const AuthModel = dynamic(() => import("./AuthModel"), {
+  ssr: false,
+});
 
 const Navbar = () => {
   const { isConnected } = useAccount();

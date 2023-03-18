@@ -1,8 +1,13 @@
-import React, { useEffect } from "react";
-import { useWeb3Token } from "~/hooks/useWeb3Token";
+import React from "react";
+import dynamic from "next/dynamic";
 
 const AuthModel = () => {
   const [isClicked, setIsClicked] = React.useState(false);
+
+  const AuthTokenGhost = dynamic(() => import("./AuthTokenGhost"), {
+    ssr: false,
+  });
+
   return (
     <div className="absolute top-0 left-0 z-50 h-screen w-screen">
       <div className="absolute left-0 top-0 z-0 h-screen w-screen bg-black opacity-50" />
@@ -24,20 +29,6 @@ const AuthModel = () => {
       </div>
     </div>
   );
-};
-
-const AuthTokenGhost = ({
-  setIsClicked,
-}: {
-  setIsClicked: React.Dispatch<React.SetStateAction<boolean>>;
-}) => {
-  const { error, token } = useWeb3Token();
-
-  useEffect(() => {
-    if (error || token) setIsClicked(false);
-  }, [error, setIsClicked, token]);
-
-  return null;
 };
 
 export default AuthModel;

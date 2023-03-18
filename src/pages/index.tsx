@@ -1,15 +1,20 @@
 import { type NextPage } from "next";
 import Head from "next/head";
-import AllTokens from "~/components/Landing/AllTokens";
-import Hero from "~/components/Landing/Hero";
-import { useCheckWeb3Token } from "~/hooks/useWeb3Token";
 import { useIsMutating } from "@tanstack/react-query";
 import { useRouter } from "next/router";
 import { useAccount } from "wagmi";
 import { currentDate } from "~/utils/getCurrentDate";
+import dynamic from "next/dynamic";
+
+const AllTokens = dynamic(() => import("../components/Landing/AllTokens"), {
+  ssr: false,
+});
+
+const Hero = dynamic(() => import("../components/Landing/Hero"), {
+  ssr: false,
+});
 
 const Home: NextPage = () => {
-  const { token } = useCheckWeb3Token();
   const isFetching = useIsMutating();
   const router = useRouter();
 

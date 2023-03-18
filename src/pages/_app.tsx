@@ -2,7 +2,7 @@ import { type AppType } from "next/app";
 import { api } from "~/utils/api";
 import "~/styles/globals.css";
 import { RainbowConfigWrapper } from "~/components/layout/RainbowConfigWrapper";
-import { Inter, Montserrat } from "@next/font/google";
+import { Inter, Montserrat } from "next/font/google";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import Layout from "~/components/layout/Layout";
 
