@@ -3,7 +3,7 @@ import axios from "axios";
 import { env } from "~/env.mjs";
 import { type MarketChartData } from "~/types/coingekko";
 
-export async function getPastDayData(
+export async function getPastDayStats(
   coinId: string,
   vsCurrency: string,
   days: number

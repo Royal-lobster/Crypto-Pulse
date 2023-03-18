@@ -87,9 +87,9 @@ const getScrappedArticles = async (
               title: result.title,
               url: scrapperRes.url as string,
               rawContent: scrapperRes.content,
-              summary: scrapperRes.description,
               image: scrapperRes.image,
               createdAt: result.created_at,
+              description: scrapperRes.description,
             };
           }
         })()

@@ -1,5 +1,9 @@
 import * as z from "zod"
+<<<<<<< HEAD
 import { CompleteNews, RelatedNewsModel, CompleteUser, RelatedUserModel, CompleteTokenNews, RelatedTokenNewsModel, CompleteStatistics, RelatedStatisticsModel } from "./index"
+=======
+import { CompleteNews, RelatedNewsModel, CompleteUser, RelatedUserModel, CompleteTokenNews, RelatedTokenNewsModel, CompleteStatistics, RelatedStatisticsModel, CompleteTokenUser, RelatedTokenUserModel } from "./index"
+>>>>>>> 62de6b904e7a7cf4acc7703d3e6986af3043bf1b
 
 export const TokenModel = z.object({
   id: z.string(),
@@ -16,6 +20,10 @@ export interface CompleteToken extends z.infer<typeof TokenModel> {
   users: CompleteUser[]
   TokenNews: CompleteTokenNews[]
   Statistics?: CompleteStatistics | null
+<<<<<<< HEAD
+=======
+  TokenUser: CompleteTokenUser[]
+>>>>>>> 62de6b904e7a7cf4acc7703d3e6986af3043bf1b
 }
 
 /**
@@ -28,4 +36,8 @@ export const RelatedTokenModel: z.ZodSchema<CompleteToken> = z.lazy(() => TokenM
   users: RelatedUserModel.array(),
   TokenNews: RelatedTokenNewsModel.array(),
   Statistics: RelatedStatisticsModel.nullish(),
+<<<<<<< HEAD
+=======
+  TokenUser: RelatedTokenUserModel.array(),
+>>>>>>> 62de6b904e7a7cf4acc7703d3e6986af3043bf1b
 }))

@@ -5,8 +5,10 @@ export const NewsModel = z.object({
   id: z.string(),
   createdAt: z.date(),
   title: z.string(),
-  content: z.string(),
-  image: z.string(),
+  rawContent: z.string().nullish(),
+  description: z.string().nullish(),
+  content: z.string().nullish(),
+  image: z.string().nullish(),
   tokenId: z.string(),
 })
 
