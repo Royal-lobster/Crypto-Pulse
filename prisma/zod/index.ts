@@ -1,5 +1,6 @@
 export * from "./user"
 export * from "./token"
 export * from "./news"
+export * from "./tokenuser"
 export * from "./tokennews"
 export * from "./statistics"
