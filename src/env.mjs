@@ -12,6 +12,10 @@ const server = z.object({
   BANANA_API_KEY: z.string().min(1),
   BANANA_MODEL_KEY: z.string().min(1),
   CRYPTOPANIC_API_KEY: z.string().min(1),
+  ROTATING_PROXY_HOST: z.string().min(1),
+  ROTATING_PROXY_PORT: z.string().min(1),
+  ROTATING_PROXY_USER: z.string().min(1),
+  ROTATING_PROXY_PASSWORD: z.string().min(1),
 });
 
 /**
@@ -36,6 +40,10 @@ const processEnv = {
   BANANA_API_KEY: process.env.BANANA_API_KEY,
   BANANA_MODEL_KEY: process.env.BANANA_MODEL_KEY,
   CRYPTOPANIC_API_KEY: process.env.CRYPTOPANIC_API_KEY,
+  ROTATING_PROXY_HOST: process.env.ROTATING_PROXY_HOST,
+  ROTATING_PROXY_PORT: process.env.ROTATING_PROXY_PORT,
+  ROTATING_PROXY_USER: process.env.ROTATING_PROXY_USER,
+  ROTATING_PROXY_PASSWORD: process.env.ROTATING_PROXY_PASSWORD,
 };
 
 // Don't touch the part below
