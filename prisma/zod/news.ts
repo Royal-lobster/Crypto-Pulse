@@ -1,5 +1,5 @@
 import * as z from "zod"
-import { CompleteToken, RelatedTokenModel, CompleteTokenNews, RelatedTokenNewsModel } from "./index"
+import { CompleteToken, RelatedTokenModel } from "./index"
 
 export const NewsModel = z.object({
   id: z.string(),
@@ -14,7 +14,6 @@ export const NewsModel = z.object({
 
 export interface CompleteNews extends z.infer<typeof NewsModel> {
   tokens: CompleteToken
-  TokenNews: CompleteTokenNews[]
 }
 
 /**
@@ -24,5 +23,4 @@ export interface CompleteNews extends z.infer<typeof NewsModel> {
  */
 export const RelatedNewsModel: z.ZodSchema<CompleteNews> = z.lazy(() => NewsModel.extend({
   tokens: RelatedTokenModel,
-  TokenNews: RelatedTokenNewsModel.array(),
 }))
