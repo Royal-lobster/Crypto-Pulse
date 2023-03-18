@@ -1,5 +1,10 @@
 import Image from "next/image";
 
+// eslint-disable-next-line @typescript-eslint/unbound-method
+const numFormatter = Intl.NumberFormat("en", {
+  notation: "standard",
+}).format;
+
 const StickyTokenCard = ({
   image,
   tokenName,
@@ -22,7 +27,7 @@ const StickyTokenCard = ({
             alt={tokenName as string}
             width={88}
             height={88}
-            className="h-[88px] w-[88px]"
+            className="h-[88px] w-[88px] rounded-full"
           />
           <h1 className="mt-4 font-display text-2xl font-bold text-white">
             {tokenName}
@@ -36,7 +41,7 @@ const StickyTokenCard = ({
                 Day Highest
               </h1>
               <p className="mt-1.5 text-center font-display font-extrabold text-white">
-                {dayHighest}
+                ${dayHighest?.toFixed(2).toLocaleString()}
               </p>
             </div>
             <div className="">
@@ -44,7 +49,7 @@ const StickyTokenCard = ({
                 Day Lowest
               </h1>
               <p className="mt-1.5 text-center font-display font-extrabold text-white">
-                {dayLowest}
+                ${dayLowest?.toFixed(2).toLocaleString()}
               </p>
             </div>
           </div>
@@ -53,7 +58,7 @@ const StickyTokenCard = ({
               Total Volume
             </h1>
             <p className="mt-1.5 font-display font-extrabold text-white">
-              {totalVolume}
+              ${numFormatter(totalVolume as number)}
             </p>
           </div>
         </div>
