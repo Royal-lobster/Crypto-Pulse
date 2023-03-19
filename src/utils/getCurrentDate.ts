@@ -1,4 +1,4 @@
-export const currentDate = (date: string | number) => {
+export const getCurrentDate = (date: string | number) => {
   const dasboardDate = new Date(date);
 
   const day = dasboardDate.getDate();

@@ -2,7 +2,7 @@ import Image from "next/image";
 import ArrowDown from "~/components/Icons/ArrowDown";
 import DashboardLoader from "~/components/loader/DashboardLoader";
 import { api } from "~/utils/api";
-import { currentDate } from "~/utils/getCurrentDate";
+import { getCurrentDate } from "~/utils/getCurrentDate";
 import { Tab } from "@headlessui/react";
 import DashboardMainContent from "~/components/dashboard/DashboardMainContent";
 import { useState } from "react";
@@ -33,14 +33,14 @@ const Dashboard = () => {
       <Tab.Group defaultIndex={0}>
         <div className="relative z-10 mx-auto mt-20 max-w-7xl">
           <h1 className="font-inter text-5xl font-black text-white">
-            Briefing for {currentDate(Date.now())}
+            Briefing for {getCurrentDate(Date.now())}
           </h1>
           <p className="mt-8 w-[50%] font-display text-lg font-normal leading-6 text-white opacity-60">
             Briefing for your subscribed favourite tokens. Make sure to bookmark
             this page !
           </p>
         </div>
-        <div className="absolute top-1/2 left-[50px] flex flex-col items-center justify-center  rounded-xl border border-[#434447] py-5 ">
+        <div className="fixed top-1/2 right-[50px] flex flex-col items-center justify-center  rounded-xl border border-[#434447] py-5 ">
           <div className="flex flex-col items-center justify-center gap-4 px-2.5 pt-5 text-[#ffffff7a]">
             <div className="rotate-[270deg] text-xs uppercase">
               <p>GO TO</p>
@@ -68,7 +68,7 @@ const Dashboard = () => {
           {userSubsribedTokens?.map((subscribedToken, i) => {
             return (
               <Tab.Panel key={`${subscribedToken.id}-${i}`}>
-                <div className="relative z-10 mx-auto mt-20 flex  max-w-7xl items-center">
+                <div className="relative z-10 mx-auto mt-20 flex max-w-7xl  items-center pr-[70px]">
                   <div className="flex gap-3 rounded-xl border border-[#434447] py-3 px-10 pl-4">
                     <Image
                       src={subscribedToken.image}

@@ -22,16 +22,7 @@ const DashboardMainContent = ({
     tokenId,
   });
   return (
-    <div className="z-10 mx-auto mt-20 flex max-w-7xl gap-[50px] pl-[70px] pb-20">
-      <div className="grid flex-grow gap-10">
-        {data?.news && (
-          <DashboardNews
-            setIsOpen={setIsOpen}
-            news={data?.news}
-            handleNewsClick={handleNewsClick}
-          />
-        )}
-      </div>
+    <div className="z-10 mx-auto mt-20 flex max-w-7xl gap-[50px] pr-[70px] pb-20">
       <div className="relative">
         <StickyTokenCard
           tokenName={tokenName}
@@ -41,6 +32,15 @@ const DashboardMainContent = ({
           totalVolume={data?.Statistics?.dayVolume}
           isLoading={isLoading}
         />
+      </div>
+      <div className="grid flex-grow gap-10">
+        {data?.news && (
+          <DashboardNews
+            setIsOpen={setIsOpen}
+            news={data?.news}
+            handleNewsClick={handleNewsClick}
+          />
+        )}
       </div>
     </div>
   );

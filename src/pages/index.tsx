@@ -3,7 +3,7 @@ import Head from "next/head";
 import { useIsMutating } from "@tanstack/react-query";
 import { useRouter } from "next/router";
 import { useAccount } from "wagmi";
-import { currentDate } from "~/utils/getCurrentDate";
+import { getCurrentDate } from "~/utils/getCurrentDate";
 import dynamic from "next/dynamic";
 import SubscribedTokensList from "~/components/Landing/SubscribedTokensList";
 
@@ -44,7 +44,7 @@ const Home: NextPage = () => {
             <div className="col-span-1 rounded-xl bg-[#1A1B1F] p-10 drop-shadow-xl">
               <p className="text-white opacity-60">Briefing for</p>
               <h1 className="mt-2 w-[80%] font-display text-5xl font-black text-white">
-                {currentDate(Date.now())}
+                {getCurrentDate(Date.now())}
               </h1>
               <div className="flex justify-end">
                 <button
