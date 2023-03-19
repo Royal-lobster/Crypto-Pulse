@@ -71,9 +71,9 @@ const PopNewsCard = ({
             ></div>
             <div className="absolute inset-0 z-0 bg-[#3D4045]"></div>
           </div>
-          <div className="relative z-30 -mt-10 flex flex-grow flex-col justify-between px-12 pb-[40px]">
+          <div className="relative z-30 -mt-10 flex flex-grow flex-col justify-between px-5 pb-[40px] md:px-12">
             <div className="">
-              <h1 className="font-display text-2xl font-semibold text-white">
+              <h1 className="font-display text-xl font-semibold text-white lg:text-2xl">
                 {newsDetails.title}
               </h1>
               <div className="mt-5 flex items-center gap-2.5 text-[#CCCCCC]">

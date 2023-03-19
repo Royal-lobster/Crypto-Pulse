@@ -7,6 +7,7 @@ const CryptoCurrentLogo = () => {
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       xmlnsXlink="http://www.w3.org/1999/xlink"
+      className="h-[33px] w-[150px] md:h-[69px] md:w-[317px]"
     >
       <path d="M0 9H317L292.917 35L317 61H0V9Z" fill="#FF5CAA" />
       <path

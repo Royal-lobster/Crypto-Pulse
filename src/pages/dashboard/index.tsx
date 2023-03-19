@@ -44,16 +44,16 @@ const Dashboard = () => {
   return (
     <>
       <Tab.Group defaultIndex={0}>
-        <div className="relative z-10 mx-auto mt-20 max-w-7xl">
-          <h1 className="font-inter text-5xl font-black text-white">
+        <div className="relative z-10 mx-auto mt-10 px-6 sm:px-8 md:mt-20 md:px-10 xl:max-w-7xl">
+          <h1 className="font-inter text-2xl font-black text-white sm:text-3xl md:text-5xl">
             Briefing for {getCurrentDate(Date.now())}
           </h1>
-          <p className="mt-8 w-[50%] font-display text-lg font-normal leading-6 text-white opacity-60">
+          <p className="mt-5 w-full font-display text-base font-normal leading-6 text-white opacity-60 sm:w-3/4 md:mt-8 md:w-[60%] md:text-lg xl:w-[50%]">
             Briefing for your subscribed favourite tokens. Make sure to bookmark
             this page !
           </p>
         </div>
-        <div className="fixed top-1/2 right-[50px] flex -translate-y-1/2 flex-col items-center justify-center  rounded-xl border border-[#434447] py-5 ">
+        <div className="fixed top-1/2 hidden -translate-y-1/2 flex-col items-center justify-center rounded-xl border border-[#434447] py-5 lg:right-[20px] lg:flex xl:right-[50px] ">
           <div className="flex flex-col items-center justify-center gap-4 px-2.5 pt-5 text-[#ffffff7a]">
             <div className="rotate-[270deg] text-xs uppercase">
               <p>GO TO</p>
@@ -81,7 +81,7 @@ const Dashboard = () => {
           {userSubsribedTokens?.map((subscribedToken, i) => {
             return (
               <Tab.Panel key={`${subscribedToken.id}-${i}`}>
-                <div className="relative z-10 mx-auto mt-20 flex max-w-7xl  items-center pr-[70px]">
+                <div className="relative z-10 mx-auto mt-10 flex items-center px-6 sm:px-8 md:px-10 lg:mt-20 lg:pr-[100px] xl:max-w-7xl xl:pr-[70px]">
                   <div className="flex gap-3 rounded-xl border border-[#434447] py-3 px-10 pl-4">
                     <Image
                       src={subscribedToken.image}

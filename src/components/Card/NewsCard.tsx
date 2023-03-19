@@ -42,7 +42,7 @@ const NewsCard = ({
         {description}
       </p>
       <button
-        className="mt-4 flex items-center gap-2.5 text-[#FF5CAA]"
+        className="mt-4 flex items-center gap-2.5 text-[#FF5CAA] hover:underline"
         onClick={() => {
           setIsOpen(true);
           handleNewsClick({
