@@ -89,6 +89,7 @@ const Dashboard = () => {
                   <div className="h-[0px] flex-grow border border-[#434447]" />
                 </div>
                 <DashboardMainContent
+                  tokenName={subscribedToken.name}
                   tokenImage={subscribedToken.image}
                   tokenId={subscribedToken.id}
                   setIsOpen={setIsOpen}
