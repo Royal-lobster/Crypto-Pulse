@@ -56,7 +56,7 @@ const PopNewsCard = ({
     >
       <div className="fixed inset-0 bg-black/80" aria-hidden="true" />
       <div className="fixed inset-0 flex items-center justify-center p-4">
-        <Dialog.Panel className="relative min-h-[600px] w-[600px] overflow-hidden rounded-2xl bg-[#27282C]">
+        <Dialog.Panel className="relative flex min-h-[600px] w-[600px] flex-col overflow-hidden rounded-2xl bg-[#27282C]">
           <div className="relative h-[250px]">
             <button
               className="absolute top-5 right-5 z-30 flex h-9 w-9 items-center justify-center rounded-lg bg-[#3D4045] text-white shadow-lg"
@@ -72,32 +72,38 @@ const PopNewsCard = ({
               style={{ backgroundImage: `url(${newsDetails.image})` }}
             ></div>
           </div>
-          <div className="relative z-30 -mt-10 px-12">
-            <h1 className="font-display text-2xl font-semibold text-white">
-              {newsDetails.title}
-            </h1>
-            <div className="mt-5 flex items-center gap-2.5 text-[#CCCCCC]">
-              <Calendar />
-              <p className="mt-0.5 font-display text-sm">
-                Published on {getCurrentDate(newsDetails.date)}
-              </p>
-            </div>
-            {isLoading && <PopNewsCardLoader />}
-            {!isLoading && data && (
-              <div className="pt-5">
-                <p className="font-display text-sm text-white">{data}</p>
+          <div className="relative z-30 -mt-10 flex flex-grow flex-col justify-between px-12 pb-[40px]">
+            <div className="">
+              <h1 className="font-display text-2xl font-semibold text-white">
+                {newsDetails.title}
+              </h1>
+              <div className="mt-5 flex items-center gap-2.5 text-[#CCCCCC]">
+                <Calendar />
+                <p className="mt-0.5 font-display text-sm">
+                  Published on {getCurrentDate(newsDetails.date)}
+                </p>
               </div>
-            )}
-            {!data && null}
-            <button
-              className="mt-5 flex items-center gap-2.5 text-[#FF5CAA]"
-              onClick={() => {
-                setIsOpen(false);
-              }}
-            >
-              <span className="-mt-0.5">Read Full Version</span>
-              <ForwardArrow />
-            </button>
+              {isLoading && <PopNewsCardLoader />}
+              {!isLoading && data && (
+                <div className="pt-5">
+                  <p className="font-display text-sm text-white">{data}</p>
+                </div>
+              )}
+              {!data && null}
+            </div>
+            <p className="mt-5 w-[max-content]  text-[#FF5CAA] hover:underline">
+              <a
+                href={`${newsDetails.id}`}
+                target="_blank"
+                className="flex items-center gap-2.5 "
+                onClick={() => {
+                  setIsOpen(false);
+                }}
+              >
+                <span className="-mt-0.5">Read Full Version</span>
+                <ForwardArrow />
+              </a>
+            </p>
           </div>
         </Dialog.Panel>
       </div>
