@@ -3,21 +3,24 @@ import { api } from "~/utils/api";
 import StickyTokenCard from "../Card/StickyTokenCard";
 import DashboardNews from "./DashboardNews";
 
-const DashboardMainContent = ({
-  tokenImage,
-  tokenId,
-  setIsOpen,
-  handleNewsClick,
-}: {
+interface DashboardMainContentProps {
+  tokenName: string;
   tokenImage: string;
   tokenId: string;
   setIsOpen: (open: boolean) => void;
   handleNewsClick: (news: NewsDetails) => void;
-}) => {
+}
+
+const DashboardMainContent = ({
+  tokenName,
+  tokenImage,
+  tokenId,
+  setIsOpen,
+  handleNewsClick,
+}: DashboardMainContentProps) => {
   const { data, isLoading } = api.dashboard.getNewsAndStatistics.useQuery({
     tokenId,
   });
-
   return (
     <div className="z-10 mx-auto mt-20 flex max-w-7xl gap-[50px] pl-[70px] pb-20">
       <div className="grid flex-grow gap-10">
@@ -31,7 +34,7 @@ const DashboardMainContent = ({
       </div>
       <div className="relative">
         <StickyTokenCard
-          tokenName={data?.Statistics?.tokenId}
+          tokenName={tokenName}
           image={tokenImage}
           dayHighest={data?.Statistics?.dayHighestPrice}
           dayLowest={data?.Statistics?.dayLowestPrice}
