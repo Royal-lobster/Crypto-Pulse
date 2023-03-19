@@ -1,7 +1,7 @@
 import { useSubscriptionsStore } from "~/store/subscriptions";
-import TokenCard from "../tokenCard";
+import TokenCard from "./TokenCard";
 
-const SubscribedTokensSection = () => {
+const SubscribedTokens = () => {
   const subscribedTokens = useSubscriptionsStore((state) => state.tokens);
 
   if (!subscribedTokens || subscribedTokens.length === 0) return null;
@@ -25,4 +25,4 @@ const SubscribedTokensSection = () => {
   );
 };
 
-export default SubscribedTokensSection;
+export default SubscribedTokens;

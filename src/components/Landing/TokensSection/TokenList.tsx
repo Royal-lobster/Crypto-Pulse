@@ -1,24 +1,22 @@
 import { useQuery } from "@tanstack/react-query";
 import { type Coin } from "types/coin";
-import TokensLoader from "../loader/TokensLoader";
-import TokenCard from "../tokenCard";
+import TokensLoader from "../../loader/TokensLoader";
+import TokenCard from "./TokenCard";
 import axios from "axios";
 
 const TokenList = ({ query }: { query?: string }) => {
   const { data: coinsData, isLoading } = useQuery({
-    queryKey: ["search", query || ""],
+    queryKey: ["search", query],
     queryFn: async () => {
       if (query && query.length > 0) {
         const { data } = await axios.get<{ coins: Coin[] }>(
           `https://api.coingecko.com/api/v3/search?query=${query}`
         );
-        console.log(data);
         return data.coins;
       }
       const { data } = await axios.get<Coin[]>(
         "https://api.coingecko.com/api/v3/coins/"
       );
-      console.log(data);
       return data;
     },
   });

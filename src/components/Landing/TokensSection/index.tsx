@@ -1,12 +1,13 @@
 import React, { useEffect } from "react";
-import SubscribedTokensSection from "./SubscribedTokensSection";
-import SelectTokensSection from "./SelectTokensSection";
+import SubscribedTokens from "./SubscribedTokens";
+import SearchAndSelectTokens from "./SearchAndSelectTokens";
 import { api } from "~/utils/api";
 import { useSubscriptionsStore } from "~/store/subscriptions";
 
 const TokensSection = () => {
   const { data } = api.dashboard.getUserSubscribedTokens.useQuery();
   const setTokens = useSubscriptionsStore((state) => state.setTokens);
+
   useEffect(() => {
     if (data) {
       setTokens(
@@ -19,10 +20,11 @@ const TokensSection = () => {
       );
     }
   }, [data, setTokens]);
+
   return (
     <div>
-      <SubscribedTokensSection />
-      <SelectTokensSection />
+      <SubscribedTokens />
+      <SearchAndSelectTokens />
     </div>
   );
 };
