@@ -2,11 +2,9 @@ import { type NextPage } from "next";
 import dynamic from "next/dynamic";
 import { useAccount } from "wagmi";
 import Hero from "~/components/Landing/Hero";
-import SubscribedTokensSection from "~/components/Landing/SubscribedTokensSection";
-import TokensSection from "~/components/Landing/TokensSection";
 
-const SelectTokensSection = dynamic(
-  () => import("../components/Landing/SelectTokensSection"),
+const TokensSection = dynamic(
+  () => import("../components/Landing/TokensSection"),
   {
     ssr: false,
   }

@@ -1,8 +1,8 @@
 import { useRef, useState } from "react";
-import SearchIcon from "../Icons/Search";
+import SearchIcon from "../../Icons/Search";
 import TokenList from "./TokenList";
 
-const SelectTokensSection = () => {
+const SearchAndSelectTokens = () => {
   const [query, setQuery] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -44,4 +44,4 @@ const SelectTokensSection = () => {
   );
 };
 
-export default SelectTokensSection;
+export default SearchAndSelectTokens;
