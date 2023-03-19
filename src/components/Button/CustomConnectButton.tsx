@@ -55,6 +55,7 @@ const CustomConnectButton = ({ address }: { address: string }) => {
   const [hiIQBalance, setHiIQBalance] = useState<number>();
 
   const fetchHiIQBalance = useCallback(async () => {
+    if (!address) return;
     const data = await getUserHiIQBalance(address);
     setHiIQBalance(data);
   }, [address]);
@@ -62,8 +63,6 @@ const CustomConnectButton = ({ address }: { address: string }) => {
   useEffect(() => {
     void fetchHiIQBalance();
   }, [fetchHiIQBalance]);
-
-  console.log(hiIQBalance);
 
   return (
     <ConnectButton.Custom>

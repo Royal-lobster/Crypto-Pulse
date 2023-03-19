@@ -12,6 +12,7 @@ const config = {
         primary: "#27282c",
         secondary: "#3e4044",
         accent: "#ec67a8",
+        darkAccent: "#1A1B1F",
       },
     },
     fontFamily: {
