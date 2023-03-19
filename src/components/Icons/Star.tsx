@@ -1,4 +1,4 @@
-const Star = () => {
+const Star = ({ noAnimate }: { noAnimate?: boolean }) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -6,7 +6,7 @@ const Star = () => {
       viewBox="0 0 24 24"
       strokeWidth={1.5}
       stroke="currentColor"
-      className="h-12 w-12 animate-spin"
+      className={`h-12 w-12 ${noAnimate ? "" : "animate-spin"}`}
     >
       <path
         strokeLinecap="round"

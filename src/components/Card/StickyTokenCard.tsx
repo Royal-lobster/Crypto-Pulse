@@ -52,7 +52,7 @@ const StickyTokenCard = ({
                   <h1 className="text-center font-display font-medium text-white">
                     Day Highest
                   </h1>
-                  <p className="mt-1.5 text-center font-display font-extrabold text-white">
+                  <p className="mt-1.5 font-display font-extrabold text-white">
                     ${dayHighest?.toFixed(2).toLocaleString()}
                   </p>
                 </div>
@@ -60,7 +60,7 @@ const StickyTokenCard = ({
                   <h1 className="text-center font-display font-medium text-white">
                     Day Lowest
                   </h1>
-                  <p className="mt-1.5 text-center font-display font-extrabold text-white">
+                  <p className="mt-1.5 font-display font-extrabold text-white">
                     ${dayLowest?.toFixed(2).toLocaleString()}
                   </p>
                 </div>

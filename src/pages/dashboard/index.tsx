@@ -8,6 +8,8 @@ import DashboardMainContent from "~/components/dashboard/DashboardMainContent";
 import { useState } from "react";
 import PopNewsCard from "~/components/Card/PopNewsCard";
 import { type NewsDetails } from "types/news";
+import Star from "~/components/Icons/Star";
+import Link from "next/link";
 
 const Dashboard = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -23,8 +25,19 @@ const Dashboard = () => {
 
   if (userSubsribedTokens?.length === 0)
     return (
-      <div className="flex min-h-[calc(100vh-90px)] flex-col items-center justify-center text-[#8C8C8C]">
-        <p className="mt-2 font-display text-2xl">No Data Found</p>
+      <div className="flex min-h-[calc(100vh-90px)] flex-col items-center justify-center py-32 text-white">
+        <Star noAnimate />
+        <h1 className="mt-5 text-center font-display text-3xl">
+          No Tokens subscribed
+        </h1>
+        <p className="mx-auto mt-6 max-w-[400px] text-center font-display text-[#BDBDBD] ">
+          We have looked far but no AI yet to read your mind :/ Subscribe to any
+          crypto tokens{" "}
+          <Link href="/">
+            <p className="inline text-[#FF5CAA] underline">here</p>
+          </Link>{" "}
+          so we know what to show here 😉
+        </p>
       </div>
     );
 
@@ -40,14 +53,14 @@ const Dashboard = () => {
             this page !
           </p>
         </div>
-        <div className="fixed top-1/2 right-[50px] flex flex-col items-center justify-center  rounded-xl border border-[#434447] py-5 ">
+        <div className="fixed top-1/2 right-[50px] flex -translate-y-1/2 flex-col items-center justify-center  rounded-xl border border-[#434447] py-5 ">
           <div className="flex flex-col items-center justify-center gap-4 px-2.5 pt-5 text-[#ffffff7a]">
             <div className="rotate-[270deg] text-xs uppercase">
               <p>GO TO</p>
             </div>
             <ArrowDown />
           </div>
-          <div className=" mt-3 h-[0px] w-full flex-grow border border-[#434447]" />
+          <div className="mt-3 h-[1px] w-full flex-grow bg-[#434447]" />
           <Tab.List>
             <div className="flex flex-col gap-3 px-2.5 pt-4">
               {userSubsribedTokens?.map((subsribedToken) => (
@@ -86,7 +99,7 @@ const Dashboard = () => {
                       </p>
                     </div>
                   </div>
-                  <div className="h-[0px] flex-grow border border-[#434447]" />
+                  <div className="h-[1px] flex-grow bg-[#434447]" />
                 </div>
                 <DashboardMainContent
                   tokenName={subscribedToken.name}

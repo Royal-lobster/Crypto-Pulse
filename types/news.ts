@@ -3,4 +3,5 @@ export type NewsDetails = {
   image: string;
   date: string | Date;
   title: string;
+  description: string;
 };

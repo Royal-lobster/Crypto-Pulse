@@ -50,6 +50,7 @@ const NewsCard = ({
             id,
             date,
             title,
+            description,
           });
         }}
       >

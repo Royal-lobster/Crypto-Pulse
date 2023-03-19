@@ -39,8 +39,6 @@ const PopNewsCard = ({
       newsId: newsDetails.id,
     });
 
-    console.log(data);
-
     setData(data);
   }, [newsDetails, mutateAsync]);
 
@@ -71,6 +69,7 @@ const PopNewsCard = ({
               className="absolute inset-0 z-10 bg-cover bg-center"
               style={{ backgroundImage: `url(${newsDetails.image})` }}
             ></div>
+            <div className="absolute inset-0 z-0 bg-[#3D4045]"></div>
           </div>
           <div className="relative z-30 -mt-10 flex flex-grow flex-col justify-between px-12 pb-[40px]">
             <div className="">
@@ -89,7 +88,13 @@ const PopNewsCard = ({
                   <p className="font-display text-sm text-white">{data}</p>
                 </div>
               )}
-              {!data && null}
+              {!data && !isLoading && (
+                <div className="pt-5">
+                  <p className="font-display text-sm text-white">
+                    {newsDetails.description}
+                  </p>
+                </div>
+              )}
             </div>
             <p className="mt-5 w-[max-content]  text-[#FF5CAA] hover:underline">
               <a
