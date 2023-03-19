@@ -50,7 +50,7 @@ const DashboardMainContent = ({
     );
 
   return (
-    <div className="z-10 mt-10 flex flex-col gap-[50px] px-6 pb-20 sm:px-8 md:px-10 lg:mt-20 lg:flex-row lg:pr-[100px] xl:max-w-7xl xl:pr-[70px]">
+    <div className="z-10 mx-auto mt-10 flex flex-col gap-[50px] px-6 pb-20 sm:px-8 md:px-10 lg:mt-20 lg:flex-row lg:pr-[100px] xl:max-w-7xl xl:px-0 xl:pr-[70px]">
       <div className="relative">
         <StickyTokenCard
           tokenName={tokenName}
