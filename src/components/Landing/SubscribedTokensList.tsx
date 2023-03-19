@@ -15,7 +15,7 @@ const SubscribedTokensList = () => {
         {data?.map((token, i) => (
           <TokenCard
             key={i}
-            name={token.ticker}
+            name={token.name}
             symbol={token.ticker}
             thumb={token.image}
             id={token.id}

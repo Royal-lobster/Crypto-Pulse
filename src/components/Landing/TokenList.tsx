@@ -25,9 +25,7 @@ const TokenList = ({ query }: { query?: string }) => {
 
   if (isLoading && !data) return <TokensLoader />;
 
-  const coins = data?.coins.filter(
-    (coin) => !userData?.some((token) => token.id === coin.id)
-  );
+  const coins = data?.coins;
 
   return (
     <>
@@ -42,6 +40,9 @@ const TokenList = ({ query }: { query?: string }) => {
                   thumb={token.large as string}
                   name={token.name}
                   symbol={token.symbol}
+                  tokenIsChecked={userData?.some(
+                    (subscribedToken) => subscribedToken.id === token.id
+                  )}
                 />
               )
           )}

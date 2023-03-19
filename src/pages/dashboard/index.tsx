@@ -72,14 +72,14 @@ const Dashboard = () => {
                   <div className="flex gap-3 rounded-xl border border-[#434447] py-3 px-10 pl-4">
                     <Image
                       src={subscribedToken.image}
-                      alt={subscribedToken.ticker}
+                      alt={subscribedToken.name}
                       width={48}
                       height={48}
                       className="h-[48px] w-[48px] rounded-full"
                     />
                     <div className="flex-grow items-center">
                       <h1 className="font-display text-base font-medium text-white">
-                        {subscribedToken.id}
+                        {subscribedToken.name}
                       </h1>
                       <p className="mt-1 text-xs uppercase text-[#ffffff7a]">
                         {subscribedToken.ticker}

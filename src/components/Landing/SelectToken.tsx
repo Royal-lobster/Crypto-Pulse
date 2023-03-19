@@ -9,7 +9,6 @@ const SelectToken = () => {
 
   const getCoins = async () => {
     const res = await fetch("https://api.coingecko.com/api/v3/coins/");
-
     return res.json();
   };
 
@@ -21,14 +20,10 @@ const SelectToken = () => {
 
   if (isFetching && !coins && !userData) return <TokensLoader />;
 
-  const filteredCoins = coins?.filter(
-    (coin) => !userData?.some((token) => token.id === coin.id)
-  );
-
   return (
     <div className="mt-14 grid grid-cols-4 gap-5">
-      {filteredCoins &&
-        filteredCoins
+      {coins &&
+        coins
           ?.slice(0, 24)
           .map(
             (token) =>
@@ -39,6 +34,9 @@ const SelectToken = () => {
                   image={token.image}
                   name={token.name}
                   symbol={token.symbol}
+                  tokenIsChecked={userData?.some(
+                    (subscribedToken) => subscribedToken.id === token.id
+                  )}
                 />
               )
           )}
