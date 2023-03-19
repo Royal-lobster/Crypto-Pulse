@@ -32,8 +32,10 @@ const NewsCard = ({
 }) => {
   return (
     <div className="">
-      <h1 className="font-display text-2xl font-semibold text-white hover:underline">
-        <a href={link}>{title}</a>
+      <h1 className="font-display text-xl font-semibold text-white hover:underline md:text-2xl">
+        <a href={link} className="block w-full">
+          {title}
+        </a>
       </h1>
       <p className="text-md mt-4 font-display font-normal text-[#CCCCCC]">
         {formatDate(date)}
