@@ -72,7 +72,7 @@ export const dashboardRouter = createTRPCRouter({
       // ======================
 
       const stats = await getPastDayStats(token.id, "usd", 1);
-      const news = (await getPastDayNews([token.ticker], 1))[0];
+      const news = await getPastDayNews([token.ticker], 1);
 
       if (!news)
         throw new TRPCError({
@@ -85,13 +85,15 @@ export const dashboardRouter = createTRPCRouter({
         data: {
           lastRefresh: new Date(),
           news: {
-            create: {
-              title: news.title,
-              description: news.description,
-              image: news.image,
-              rawContent: news.rawContent,
-              id: news.url,
-              createdAt: news.createdAt,
+            createMany: {
+              data: news.map((n) => ({
+                title: n.title,
+                description: n.description,
+                image: n.image,
+                rawContent: n.rawContent,
+                id: n.url,
+                createdAt: n.createdAt,
+              })),
             },
           },
           Statistics: {
