@@ -1,52 +1,46 @@
-import { useQuery, type QueryObserverResult } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { type Coin } from "types/coin";
-import { api } from "~/utils/api";
 import TokensLoader from "../loader/TokensLoader";
 import TokenCard from "../tokenCard";
+import axios from "axios";
 
 const TokenList = ({ query }: { query?: string }) => {
-  const { data: userData } = api.dashboard.getUserSubscribedTokens.useQuery();
+  const { data: coinsData, isLoading } = useQuery({
+    queryKey: ["search", query || ""],
+    queryFn: async () => {
+      if (query) {
+        const { data } = await axios.get<{ coins: Coin[] }>(
+          `https://api.coingecko.com/api/v3/search?query=${query}`
+        );
+        return data.coins;
+      }
+      const { data } = await axios.get<Coin[]>(
+        "https://api.coingecko.com/api/v3/coins/"
+      );
+      return data;
+    },
+  });
 
-  const searchCoins = async () => {
-    if (!query) return;
-
-    const res = await fetch(
-      `https://api.coingecko.com/api/v3/search?query=${query}`
-    );
-
-    return res.json();
-  };
-
-  const { data, isLoading }: QueryObserverResult<{ coins: Coin[] }, unknown> =
-    useQuery({
-      queryKey: ["search"],
-      queryFn: searchCoins,
-    });
-
-  if (isLoading && !data) return <TokensLoader />;
-
-  const coins = data?.coins;
+  console.log(coinsData);
 
   return (
     <>
-      <div className="mt-14 grid grid-cols-4 gap-5">
-        {coins &&
-          coins?.map(
-            (token) =>
-              token && (
-                <TokenCard
-                  id={token.id}
-                  key={token.id}
-                  thumb={token.large as string}
-                  name={token.name}
-                  symbol={token.symbol}
-                  tokenIsChecked={userData?.some(
-                    (subscribedToken) => subscribedToken.id === token.id
-                  )}
-                />
-              )
-          )}
-      </div>
+      {isLoading || !coinsData ? (
+        <TokensLoader />
+      ) : (
+        <div className="mt-14 grid grid-cols-4 gap-5">
+          {(coinsData as Coin[]).splice(0, 24).map((coin) => (
+            <TokenCard
+              id={coin.id}
+              image={coin.image}
+              key={coin.id}
+              thumb={coin.large as string}
+              name={coin.name}
+              ticker={coin.symbol}
+            />
+          ))}
+        </div>
+      )}
     </>
   );
 };

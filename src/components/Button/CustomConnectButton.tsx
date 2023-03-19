@@ -120,22 +120,32 @@ const CustomConnectButton = ({ address }: { address: string }) => {
               }
 
               return (
-                <button
-                  className="flex items-center gap-2 rounded-xl bg-[#1A1B1F] py-1 pl-3 pr-1 shadow-lg"
-                  onClick={openAccountModal}
-                  type="button"
-                >
-                  <p className="font-display font-bold text-white">
-                    {hiIQBalance} HiIQ
-                  </p>
-                  <div className="flex gap-2 rounded-xl bg-[#ffffff0f] py-1.5 px-3">
-                    <UserAvatar address={account.address} />
+                <div className="flex items-center gap-4">
+                  <a
+                    target="_blank"
+                    href="https://iq.braindao.org/dashboard/stake"
+                    className="cursor-pointer rounded-xl bg-[#FF5CAA] py-2 px-4 font-display text-white"
+                  >
+                    🧠 Stake HiIQ
+                  </a>
+
+                  <button
+                    className="flex items-center gap-2 rounded-xl bg-[#1A1B1F] py-1 pl-3 pr-1 shadow-lg"
+                    onClick={openAccountModal}
+                    type="button"
+                  >
                     <p className="font-display font-bold text-white">
-                      {" "}
-                      {account.displayName}
+                      {hiIQBalance} HiIQ
                     </p>
-                  </div>
-                </button>
+                    <div className="flex gap-2 rounded-xl bg-[#ffffff0f] py-1.5 px-3">
+                      <UserAvatar address={account.address} />
+                      <p className="font-display font-bold text-white">
+                        {" "}
+                        {account.displayName}
+                      </p>
+                    </div>
+                  </button>
+                </div>
               );
             })()}
           </div>

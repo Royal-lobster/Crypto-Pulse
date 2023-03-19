@@ -1,6 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
-
-const Hero = () => {
+const MarketingSection = () => {
   return (
     <div className="mt-28 grid grid-cols-2 gap-20">
       <img src="/images/hero.svg" alt="hero" className="block" />
@@ -18,4 +17,4 @@ const Hero = () => {
   );
 };
 
-export default Hero;
+export default MarketingSection;

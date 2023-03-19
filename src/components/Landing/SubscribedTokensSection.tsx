@@ -1,25 +1,23 @@
-import { api } from "~/utils/api";
+import { useSubscriptionsStore } from "~/store/subscriptions";
 import TokenCard from "../tokenCard";
 
-const SubscribedTokensList = () => {
-  const { data } = api.dashboard.getUserSubscribedTokens.useQuery();
+const SubscribedTokensSection = () => {
+  const subscribedTokens = useSubscriptionsStore((state) => state.tokens);
 
-  if (!data || data.length === 0) return null;
-
+  if (!subscribedTokens || subscribedTokens.length === 0) return null;
   return (
     <div className="mt-28">
       <h1 className="font-display text-2xl font-bold text-white">
         Your Subscribed Tokens
       </h1>
       <div className="mt-14 grid grid-cols-4 gap-5">
-        {data?.map((token, i) => (
+        {subscribedTokens?.map((token, i) => (
           <TokenCard
             key={i}
             name={token.name}
-            symbol={token.ticker}
+            ticker={token.ticker}
             thumb={token.image}
             id={token.id}
-            tokenIsChecked
           />
         ))}
       </div>
@@ -27,4 +25,4 @@ const SubscribedTokensList = () => {
   );
 };
 
-export default SubscribedTokensList;
+export default SubscribedTokensSection;

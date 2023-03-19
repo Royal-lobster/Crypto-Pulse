@@ -31,15 +31,6 @@ const Navbar = () => {
           <CryptoCurrentLogo />
         </Link>
         <div className="flex items-center gap-4">
-          {isConnected && (
-            <a
-              target="_blank"
-              href="https://iq.braindao.org/dashboard/stake"
-              className="cursor-pointer rounded-xl bg-[#FF5CAA] py-2 px-4 font-display text-white"
-            >
-              🧠 Stake HiIQ
-            </a>
-          )}
           <CustomConnectButton address={address as string} />
         </div>
       </nav>
