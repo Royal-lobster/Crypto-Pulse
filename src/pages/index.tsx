@@ -5,6 +5,7 @@ import { useRouter } from "next/router";
 import { useAccount } from "wagmi";
 import { currentDate } from "~/utils/getCurrentDate";
 import dynamic from "next/dynamic";
+import SubscribedTokensList from "~/components/Landing/SubscribedTokensList";
 
 const AllTokens = dynamic(() => import("../components/Landing/AllTokens"), {
   ssr: false,
@@ -67,6 +68,7 @@ const Home: NextPage = () => {
               </div>
             </div>
           </div>
+          {isConnected && <SubscribedTokensList />}
           {!isConnected ? <Hero /> : <AllTokens />}
         </div>
       </main>

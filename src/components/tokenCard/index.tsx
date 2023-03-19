@@ -12,19 +12,27 @@ type TokenCardProps = {
   thumb?: string;
   name: string;
   symbol: string;
+  tokenIsChecked?: boolean;
 };
 
-const TokenCard = ({ image, name, symbol, thumb, id }: TokenCardProps) => {
+const TokenCard = ({
+  image,
+  name,
+  symbol,
+  thumb,
+  id,
+  tokenIsChecked,
+}: TokenCardProps) => {
   const [isChecked, setIsChecked] = useState(false);
   const { mutate: mutateRemove } = api.token.removeToken.useMutation();
   const { mutate: mutateAdd } = api.token.addToken.useMutation();
 
   const handleTokenClick = () => {
     setIsChecked(!isChecked);
-    if (isChecked) {
+    if (isChecked || tokenIsChecked) {
       mutateRemove({ tokenId: id });
     }
-    if (!isChecked) {
+    if (!isChecked || !tokenIsChecked) {
       mutateAdd({
         tokenId: id,
         tickerId: symbol,
@@ -37,7 +45,7 @@ const TokenCard = ({ image, name, symbol, thumb, id }: TokenCardProps) => {
   return (
     <div
       onClick={handleTokenClick}
-      data-checked={isChecked || undefined}
+      data-checked={tokenIsChecked || isChecked || undefined}
       className="flex cursor-pointer items-center rounded-xl py-2.5 px-4 outline-[#5d5f62] hover:shadow-lg hover:outline data-[checked]:bg-[#3D4045]"
     >
       <div className="flex w-full items-center gap-3">
@@ -58,7 +66,7 @@ const TokenCard = ({ image, name, symbol, thumb, id }: TokenCardProps) => {
           <input
             type="checkbox"
             name="token"
-            checked={isChecked}
+            checked={isChecked || tokenIsChecked}
             id="token"
             className="token-card-checkbox grid h-6 w-6 origin-bottom-left translate-y-[0.075em] appearance-none place-content-center rounded border-[#FFFBFB] bg-[#3D4045] font-[inherit] text-[currentColor] before:h-4 before:w-4 before:scale-0 before:bg-[CanvasText] before:shadow-[inset_1em_1em_#fff] before:transition before:ease-in-out before:content-[''] checked:bg-[#FF5CAA] checked:before:scale-100"
           />
