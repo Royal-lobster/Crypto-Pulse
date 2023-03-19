@@ -1,10 +1,10 @@
 import { Dialog } from "@headlessui/react";
 import { useCallback, useEffect, useState } from "react";
 import { type NewsDetails } from "types/news";
-import { isDataView } from "util/types";
 import { api } from "~/utils/api";
 import { getCurrentDate } from "~/utils/getCurrentDate";
 import Calendar from "../Icons/Calendar";
+import Close from "../Icons/Close";
 import ForwardArrow from "../Icons/ForwardArrow";
 import Star from "../Icons/Star";
 
@@ -32,14 +32,14 @@ const PopNewsCard = ({
   const { mutateAsync, isLoading } =
     api.dashboard.getCondensedNews.useMutation();
 
-  console.log(isLoading);
-
   const [data, setData] = useState<string | null>();
 
   const handleNewsFetch = useCallback(async () => {
     const data = await mutateAsync({
       newsId: newsDetails.id,
     });
+
+    console.log(data);
 
     setData(data);
   }, [newsDetails, mutateAsync]);
@@ -58,7 +58,14 @@ const PopNewsCard = ({
       <div className="fixed inset-0 flex items-center justify-center p-4">
         <Dialog.Panel className="relative min-h-[600px] w-[600px] overflow-hidden rounded-2xl bg-[#27282C]">
           <div className="relative h-[250px]">
-            <button className="absolute top-5 left-5 h-9 w-9 shadow-lg"></button>
+            <button
+              className="absolute top-5 right-5 z-30 flex h-9 w-9 items-center justify-center rounded-lg bg-[#3D4045] text-white shadow-lg"
+              onClick={() => {
+                setIsOpen(false);
+              }}
+            >
+              <Close />
+            </button>
             <div className="absolute inset-0 z-20 bg-gradient-to-b from-[#27282c3a] via-[#27282c3a] to-[#27282C]"></div>
             <div
               className="absolute inset-0 z-10 bg-cover bg-center"
@@ -67,27 +74,18 @@ const PopNewsCard = ({
           </div>
           <div className="relative z-30 -mt-10 px-12">
             <h1 className="font-display text-2xl font-semibold text-white">
-              Top Crypto Trader Issues Bitcoin Warning, Says BTC Flashing Vibes
-              of March 2020 Meltdown
+              {newsDetails.title}
             </h1>
             <div className="mt-5 flex items-center gap-2.5 text-[#CCCCCC]">
               <Calendar />
               <p className="mt-0.5 font-display text-sm">
-                Published on {getCurrentDate(Date.now())}
+                Published on {getCurrentDate(newsDetails.date)}
               </p>
             </div>
             {isLoading && <PopNewsCardLoader />}
             {!isLoading && data && (
               <div className="pt-5">
-                <p className="font-display text-sm text-white">
-                  Pseudonymous analyst Kaleo tells his 566,300 Twitter followers
-                  that Bitcoin is currently consolidating above a diagonal
-                  trendline after taking it out earlier this year. According to
-                  the trader, the price action is reminiscent of how Bitcoin
-                  moved in early 2020 when it rallied from around $6,000 to
-                  $10,000 only to capitulate back to $3,000 in March of the same
-                  year.
-                </p>
+                <p className="font-display text-sm text-white">{data}</p>
               </div>
             )}
             {!data && null}

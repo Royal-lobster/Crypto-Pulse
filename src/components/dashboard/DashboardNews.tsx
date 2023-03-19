@@ -12,7 +12,7 @@ const DashboardNews = ({
   handleNewsClick: (news: NewsDetails) => void;
 }) => {
   return (
-    <div className="grid gap-5">
+    <div className="grid gap-8">
       {news.map((dashboardNews) => (
         <NewsCard
           key={dashboardNews.id}

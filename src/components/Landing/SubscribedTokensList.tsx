@@ -4,7 +4,7 @@ import TokenCard from "../tokenCard";
 const SubscribedTokensList = () => {
   const { data } = api.dashboard.getUserSubscribedTokens.useQuery();
 
-  if (!data) return null;
+  if (!data || data.length === 0) return null;
 
   return (
     <div className="mt-28">
