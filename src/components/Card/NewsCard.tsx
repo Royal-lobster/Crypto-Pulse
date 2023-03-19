@@ -1,3 +1,6 @@
+import { type NewsDetails } from "types/news";
+import ForwardArrow from "../Icons/ForwardArrow";
+
 const formatDate = (date: string | Date) => {
   const eventDate = new Date(date);
 
@@ -13,11 +16,19 @@ const NewsCard = ({
   link,
   date,
   description,
+  newsImage,
+  setIsOpen,
+  handleNewsClick,
+  id,
 }: {
+  id: string;
   title: string;
   link?: string;
   date: string | Date;
   description: string;
+  newsImage: string;
+  setIsOpen: (open: boolean) => void;
+  handleNewsClick: (news: NewsDetails) => void;
 }) => {
   return (
     <div className="">
@@ -30,6 +41,21 @@ const NewsCard = ({
       <p className="text-md mt-4 font-display font-normal text-[#CCCCCC]">
         {description}
       </p>
+      <button
+        className="mt-4 flex items-center gap-2.5 text-[#FF5CAA]"
+        onClick={() => {
+          setIsOpen(true);
+          handleNewsClick({
+            image: newsImage,
+            id,
+            date,
+            title,
+          });
+        }}
+      >
+        Read Condensed
+        <ForwardArrow />
+      </button>
     </div>
   );
 };

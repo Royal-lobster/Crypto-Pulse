@@ -5,10 +5,19 @@ import { api } from "~/utils/api";
 import { currentDate } from "~/utils/getCurrentDate";
 import { Tab } from "@headlessui/react";
 import DashboardMainContent from "~/components/dashboard/DashboardMainContent";
+import { useState } from "react";
+import PopNewsCard from "~/components/Card/PopNewsCard";
+import { type NewsDetails } from "types/news";
 
 const Dashboard = () => {
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [newsDetails, setNewsDetails] = useState<NewsDetails>();
   const { isLoading: tokensIsLoading, data: userSubsribedTokens } =
     api.dashboard.getUserSubscribedTokens.useQuery();
+
+  const handleNewsClick = (newsDetails: NewsDetails) => {
+    setNewsDetails(newsDetails);
+  };
 
   if (tokensIsLoading && !userSubsribedTokens) return <DashboardLoader />;
 
@@ -31,7 +40,7 @@ const Dashboard = () => {
             this page !
           </p>
         </div>
-        <div className="absolute left-[50px] flex flex-col items-center justify-center  rounded-xl border border-[#434447] py-5 ">
+        <div className="absolute top-1/2 left-[50px] flex flex-col items-center justify-center  rounded-xl border border-[#434447] py-5 ">
           <div className="flex flex-col items-center justify-center gap-4 px-2.5 pt-5 text-[#ffffff7a]">
             <div className="rotate-[270deg] text-xs uppercase">
               <p>GO TO</p>
@@ -60,7 +69,7 @@ const Dashboard = () => {
             return (
               <Tab.Panel key={`${subscribedToken.id}-${i}`}>
                 <div className="relative z-10 mx-auto mt-20 flex  max-w-7xl items-center">
-                  <div className="flex w-[250px] gap-4 rounded-xl border border-[#434447] py-5 px-7">
+                  <div className="flex gap-3 rounded-xl border border-[#434447] py-3 px-10 pl-4">
                     <Image
                       src={subscribedToken.image}
                       alt={subscribedToken.ticker}
@@ -68,7 +77,7 @@ const Dashboard = () => {
                       height={48}
                       className="h-[48px] w-[48px] rounded-full"
                     />
-                    <div className="items-center">
+                    <div className="flex-grow items-center">
                       <h1 className="font-display text-base font-medium text-white">
                         {subscribedToken.id}
                       </h1>
@@ -82,12 +91,21 @@ const Dashboard = () => {
                 <DashboardMainContent
                   tokenImage={subscribedToken.image}
                   tokenId={subscribedToken.id}
+                  setIsOpen={setIsOpen}
+                  handleNewsClick={handleNewsClick}
                 />
               </Tab.Panel>
             );
           })}
         </Tab.Panels>
       </Tab.Group>
+      {newsDetails && (
+        <PopNewsCard
+          isOpen={isOpen}
+          setIsOpen={setIsOpen}
+          newsDetails={newsDetails}
+        />
+      )}
     </>
   );
 };
