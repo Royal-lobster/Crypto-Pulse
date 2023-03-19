@@ -5,6 +5,7 @@ interface SubscriptionsStore {
   tokens: SubscribedTokens[];
   addToken: (token: SubscribedTokens) => void;
   removeToken: (tokenId: string) => void;
+  setTokens: (tokens: SubscribedTokens[]) => void;
 }
 
 export const useSubscriptionsStore = create<SubscriptionsStore>((set) => ({
@@ -14,4 +15,5 @@ export const useSubscriptionsStore = create<SubscriptionsStore>((set) => ({
     set((state) => ({
       tokens: state.tokens.filter((token) => token.id !== tokenId),
     })),
+  setTokens: (tokens) => set(() => ({ tokens })),
 }));

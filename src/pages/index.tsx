@@ -3,6 +3,7 @@ import dynamic from "next/dynamic";
 import { useAccount } from "wagmi";
 import Hero from "~/components/Landing/Hero";
 import SubscribedTokensSection from "~/components/Landing/SubscribedTokensSection";
+import TokensSection from "~/components/Landing/TokensSection";
 
 const SelectTokensSection = dynamic(
   () => import("../components/Landing/SelectTokensSection"),
@@ -37,14 +38,7 @@ const Home: NextPage = () => {
     <main className=" pb-32">
       <div className="relative z-10 mx-auto mt-20 max-w-7xl">
         <Hero />
-        {isConnected ? (
-          <>
-            <SubscribedTokensSection />
-            <SelectTokensSection />
-          </>
-        ) : (
-          <MarketingSection />
-        )}
+        {isConnected ? <TokensSection /> : <MarketingSection />}
       </div>
     </main>
   );

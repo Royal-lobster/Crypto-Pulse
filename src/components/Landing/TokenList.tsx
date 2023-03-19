@@ -8,15 +8,17 @@ const TokenList = ({ query }: { query?: string }) => {
   const { data: coinsData, isLoading } = useQuery({
     queryKey: ["search", query || ""],
     queryFn: async () => {
-      if (query) {
+      if (query && query.length > 0) {
         const { data } = await axios.get<{ coins: Coin[] }>(
           `https://api.coingecko.com/api/v3/search?query=${query}`
         );
+        console.log(data);
         return data.coins;
       }
       const { data } = await axios.get<Coin[]>(
         "https://api.coingecko.com/api/v3/coins/"
       );
+      console.log(data);
       return data;
     },
   });
@@ -29,7 +31,7 @@ const TokenList = ({ query }: { query?: string }) => {
         <TokensLoader />
       ) : (
         <div className="mt-14 grid grid-cols-4 gap-5">
-          {(coinsData as Coin[]).splice(0, 24).map((coin) => (
+          {coinsData.splice(0, 24).map((coin) => (
             <TokenCard
               id={coin.id}
               image={coin.image}
