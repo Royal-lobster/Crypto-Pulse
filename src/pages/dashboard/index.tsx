@@ -17,11 +17,17 @@ const Dashboard = () => {
   const { isLoading: tokensIsLoading, data: userSubsribedTokens } =
     api.dashboard.getUserSubscribedTokens.useQuery();
 
+  const { data: newsData, isLoading } =
+    api.dashboard.getNewsAndStatistics.useQuery();
+
+  console.log(newsData);
+
   const handleNewsClick = (newsDetails: NewsDetails) => {
     setNewsDetails(newsDetails);
   };
 
-  if (tokensIsLoading && !userSubsribedTokens) return <DashboardLoader />;
+  if (tokensIsLoading && !userSubsribedTokens && isLoading && !newsData)
+    return <DashboardLoader />;
 
   if (userSubsribedTokens?.length === 0)
     return (
@@ -77,8 +83,7 @@ const Dashboard = () => {
           ))}
         </div>
       </div>
-
-      {userSubsribedTokens?.map((subscribedToken, i) => {
+      {/* {userSubsribedTokens?.map((subscribedToken, i) => {
         return (
           <div key={`${subscribedToken.id}-${i}`}>
             <div className="relative z-10 mx-auto mt-10 flex items-center px-0 sm:px-8 md:px-10 lg:mt-20 lg:pr-[100px] xl:max-w-7xl xl:pr-[70px] xl:pl-0">
@@ -110,7 +115,7 @@ const Dashboard = () => {
             />
           </div>
         );
-      })}
+      })} */}
 
       {newsDetails && (
         <PopNewsCard

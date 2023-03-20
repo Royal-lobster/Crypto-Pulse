@@ -19,9 +19,9 @@ const DashboardMainContent = ({
   setIsOpen,
   handleNewsClick,
 }: DashboardMainContentProps) => {
-  const { data, isLoading } = api.dashboard.getNewsAndStatistics.useQuery({
-    tokenId,
-  });
+  const { data, isLoading } = api.dashboard.getNewsAndStatistics.useQuery();
+
+  console.log(data);
 
   if (isLoading && !data)
     return (
