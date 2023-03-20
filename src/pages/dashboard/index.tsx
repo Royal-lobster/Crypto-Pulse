@@ -102,7 +102,6 @@ const Dashboard = () => {
           <div
             key={`${tokenData?.id}-${i}`}
             id={tokenData?.id}
-            id={tokenData?.id}
             ref={(ref) => {
               if (ref && tokenData) {
                 subscribedTokenRefs.current[tokenData?.id] = ref;
