@@ -61,11 +61,13 @@ const TokenCard = ({ image, name, ticker, thumb, id }: TokenCardProps) => {
           height={40}
           className="rounded-full"
         />
-        <div className="">
-          <h1 className="font-display text-base font-medium text-white">
+        <div className="flex flex-col gap-2">
+          <h1 className="hidden font-display text-base font-medium text-white md:block">
             {name}
           </h1>
-          <p className="mt-1 text-xs uppercase text-[#ffffff7a]">{ticker}</p>
+          <p className="uppercase text-white md:text-xs md:text-[#ffffff7a]">
+            {ticker}
+          </p>
         </div>
         <div className="relative ml-auto text-[#FFFBFB]">
           <input

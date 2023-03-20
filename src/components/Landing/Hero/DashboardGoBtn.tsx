@@ -23,7 +23,7 @@ const DashBoardGoButton = () => {
                 console.error(error);
               });
           }}
-          className="cursor-pointer rounded-xl bg-[#FF5CAA] py-4 px-8 font-display text-white data-[disabled]:bg-[#A44D76]"
+          className="cursor-pointer rounded-xl bg-[#FF5CAA] py-2 px-8 font-display text-white data-[disabled]:bg-[#A44D76]"
         >
           Check the Area
         </button>

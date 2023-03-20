@@ -10,7 +10,7 @@ const SubscribedTokens = () => {
       <h1 className="font-display text-2xl font-bold text-white">
         Your Subscribed Tokens
       </h1>
-      <div className="mt-14 grid grid-cols-4 gap-5">
+      <div className="mt-14 grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
         {subscribedTokens?.map((token, i) => (
           <TokenCard
             key={i}

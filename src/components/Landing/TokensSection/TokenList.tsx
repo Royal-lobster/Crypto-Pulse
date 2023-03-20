@@ -6,7 +6,7 @@ import axios from "axios";
 
 const TokenList = ({ query }: { query?: string }) => {
   const { data: coinsData, isLoading } = useQuery({
-    queryKey: ["search", query],
+    queryKey: ["search", query || ""],
     queryFn: async () => {
       if (query && query.length > 0) {
         const { data } = await axios.get<{ coins: Coin[] }>(
@@ -28,7 +28,7 @@ const TokenList = ({ query }: { query?: string }) => {
       {isLoading || !coinsData ? (
         <TokensLoader />
       ) : (
-        <div className="mt-14 grid grid-cols-4 gap-5">
+        <div className="mt-14 grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
           {coinsData.splice(0, 24).map((coin) => (
             <TokenCard
               id={coin.id}

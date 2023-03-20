@@ -13,7 +13,7 @@ const SearchAndSelectTokens = () => {
 
   return (
     <div className="mt-28">
-      <div className="flex justify-between">
+      <div className="flex flex-col justify-between gap-4 lg:flex-row">
         <h1 className="self-center font-display text-2xl font-bold text-white">
           Select your Tokens !
         </h1>
