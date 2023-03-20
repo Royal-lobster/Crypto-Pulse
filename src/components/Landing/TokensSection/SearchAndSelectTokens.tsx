@@ -10,7 +10,6 @@ const SearchAndSelectTokens = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    console.log("RUNNING", coinsData);
     const getCoins = async () => {
       setIsLoading(true);
       try {
@@ -20,14 +19,13 @@ const SearchAndSelectTokens = () => {
         );
         const data = (await res.json()) as { coins: Coin[] };
         const coins = data.coins.slice(0, 24);
-        console.log(coins);
         setCoinsData(coins);
       } catch (error) {}
     };
     getCoins().finally(() => {
       setIsLoading(false);
     });
-  }, [query, coinsData]);
+  }, [query, setCoinsData]);
 
   const handleSearchSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -63,7 +61,7 @@ const SearchAndSelectTokens = () => {
         <TokensLoader />
       ) : (
         <div className="mt-14 grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
-          {coinsData.splice(0, 24).map((coin) => (
+          {coinsData.map((coin) => (
             <TokenCard
               id={coin.id}
               image={coin.image}
