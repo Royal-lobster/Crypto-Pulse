@@ -16,7 +16,12 @@ const DashBoardGoButton = () => {
           data-disabled={isFetching > 0 || undefined}
           className="cursor-pointer rounded-xl bg-accent font-display text-white data-[disabled]:cursor-wait data-[disabled]:bg-accent/25"
         >
-          <a href="/dashboard" className="flex items-center gap-2 py-2 px-8">
+          <a
+            href="/dashboard"
+            className={`flex items-center gap-2 py-2 px-8 ${
+              isFetching ? "pointer-events-none" : ""
+            }`}
+          >
             {isFetching ? (
               <ArrowPathIcon className="w-4 animate-spin" />
             ) : (

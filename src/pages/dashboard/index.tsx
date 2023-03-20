@@ -162,14 +162,23 @@ const Dashboard = () => {
             {sortedNewsData.map((newsData) => {
               if (newsData.news.length === 0) {
                 return (
-                  <QuietTokensCard
+                  <div
                     key={newsData.Statistics?.id}
-                    tokenName={newsData.name}
-                    totalVolume={newsData.Statistics?.dayVolume}
-                    dayHighest={newsData.Statistics?.dayHighestPrice}
-                    dayLowest={newsData.Statistics?.dayLowestPrice}
-                    image={newsData.image}
-                  />
+                    id={newsData?.id}
+                    ref={(ref) => {
+                      if (ref && newsData) {
+                        subscribedTokenRefs.current[newsData?.id] = ref;
+                      }
+                    }}
+                  >
+                    <QuietTokensCard
+                      tokenName={newsData.name}
+                      totalVolume={newsData.Statistics?.dayVolume}
+                      dayHighest={newsData.Statistics?.dayHighestPrice}
+                      dayLowest={newsData.Statistics?.dayLowestPrice}
+                      image={newsData.image}
+                    />
+                  </div>
                 );
               }
             })}
