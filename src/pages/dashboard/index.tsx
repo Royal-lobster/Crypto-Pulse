@@ -150,7 +150,7 @@ const Dashboard = () => {
         }
       })}
       {sortedNewsData?.some((newsData) => newsData.news.length === 0) && (
-        <div className="mt-20 border-t border-[#434447] pt-12 lg:w-[calc(100%-100px)] xl:w-[calc(100%-70px)]">
+        <div className="mt-10 border-t border-[#434447] pt-12 lg:mt-20 lg:w-[calc(100%-100px)] xl:w-[calc(100%-70px)]">
           <h1 className="font-display text-2xl font-bold text-white">
             Quiet tokens yesterday
           </h1>
