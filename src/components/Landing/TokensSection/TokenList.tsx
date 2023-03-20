@@ -3,6 +3,7 @@ import { type Coin } from "types/coin";
 import TokensLoader from "../../loader/TokensLoader";
 import TokenCard from "./TokenCard";
 import axios from "axios";
+import { env } from "~/env.mjs";
 
 const TokenList = ({ query }: { query?: string }) => {
   const { data: coinsData, isLoading } = useQuery({
@@ -10,13 +11,35 @@ const TokenList = ({ query }: { query?: string }) => {
     queryFn: async () => {
       if (query && query.length > 0) {
         const { data } = await axios.get<{ coins: Coin[] }>(
-          `https://api.coingecko.com/api/v3/search?query=${query}`
+          `https://api.coingecko.com/api/v3/search?query=${query}`,
+          {
+            proxy: {
+              host: env.ROTATING_PROXY_HOST,
+              port: Number(env.ROTATING_PROXY_PORT),
+              auth: {
+                username: env.ROTATING_PROXY_USER,
+                password: env.ROTATING_PROXY_PASSWORD,
+              },
+              protocol: "http",
+            },
+          }
         );
         return data.coins;
       }
 
       const { data } = await axios.get<Coin[]>(
-        "https://api.coingecko.com/api/v3/coins/"
+        "https://api.coingecko.com/api/v3/coins/",
+        {
+          proxy: {
+            host: env.ROTATING_PROXY_HOST,
+            port: Number(env.ROTATING_PROXY_PORT),
+            auth: {
+              username: env.ROTATING_PROXY_USER,
+              password: env.ROTATING_PROXY_PASSWORD,
+            },
+            protocol: "http",
+          },
+        }
       );
       return data;
     },
