@@ -158,7 +158,7 @@ const Dashboard = () => {
             Tokens that have no news items yesterday. But don’t worry ! Here are
             your daily stats for the tokens you love.
           </p>
-          <div className="mt-10 grid grid-cols-2 gap-4 md:grid-cols-3">
+          <div className="mt-10 grid grid-cols-1 gap-4 md:grid-cols-3">
             {sortedNewsData.map((newsData) => {
               if (newsData.news.length === 0) {
                 return (

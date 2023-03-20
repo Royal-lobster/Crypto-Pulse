@@ -24,7 +24,7 @@ const QuietTokensCard = ({
           height={88}
           className="h-[88px] w-[88px] rounded-full"
         />
-        <h1 className="mt-4 font-display text-xl font-bold text-white lg:text-2xl ">
+        <h1 className="text-md mt-4 text-center font-display font-bold text-white lg:text-xl ">
           {tokenName}
         </h1>
       </div>
