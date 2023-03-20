@@ -20,8 +20,6 @@ const Dashboard = () => {
   const { data: newsData, isLoading } =
     api.dashboard.getNewsAndStatistics.useQuery();
 
-  console.log(newsData);
-
   const handleNewsClick = (newsDetails: NewsDetails) => {
     setNewsDetails(newsDetails);
   };
@@ -29,7 +27,7 @@ const Dashboard = () => {
   if (tokensIsLoading && !userSubsribedTokens && isLoading && !newsData)
     return <DashboardLoader />;
 
-  if (userSubsribedTokens?.length === 0)
+  if (userSubsribedTokens?.length === 0 || (!userSubsribedTokens && !isLoading))
     return (
       <div className="flex min-h-[calc(100vh-90px)] flex-col items-center justify-center py-32 text-white">
         <Star noAnimate />
@@ -68,10 +66,12 @@ const Dashboard = () => {
           </span>
         </div>
         <div className="mt-3 hidden h-[1px] w-full flex-grow bg-[#434447] lg:block" />
-
         <div className="flex justify-center gap-3 overflow-scroll border-l border-[#434447] py-2.5 pl-3 lg:flex-col lg:justify-start lg:overflow-hidden lg:border-l-0 lg:py-0 lg:px-2.5 lg:pl-2.5 lg:pt-4">
           {userSubsribedTokens?.map((subsribedToken) => (
-            <div key={subsribedToken.id} className="flex-shrink-0">
+            <button
+              key={subsribedToken.id}
+              className="flex-shrink-0 cursor-pointer"
+            >
               <Image
                 src={subsribedToken.image}
                 alt={subsribedToken.id}
@@ -79,43 +79,46 @@ const Dashboard = () => {
                 height={36}
                 className="h-[36px] w-[36px] rounded-full"
               />
-            </div>
+            </button>
           ))}
         </div>
       </div>
-      {/* {userSubsribedTokens?.map((subscribedToken, i) => {
+
+      {newsData?.map((tokenData, i) => {
         return (
-          <div key={`${subscribedToken.id}-${i}`}>
+          <div key={`${tokenData?.id}-${i}`} id={tokenData?.id}>
             <div className="relative z-10 mx-auto mt-10 flex items-center px-0 sm:px-8 md:px-10 lg:mt-20 lg:pr-[100px] xl:max-w-7xl xl:pr-[70px] xl:pl-0">
               <div className="flex gap-3 rounded-xl border border-[#434447] py-3 px-10 pl-4">
                 <Image
-                  src={subscribedToken.image}
-                  alt={subscribedToken.name}
+                  src={tokenData?.image}
+                  alt={tokenData?.name}
                   width={48}
                   height={48}
                   className="h-[48px] w-[48px] rounded-full"
                 />
                 <div className="flex-grow items-center">
                   <h1 className="font-display text-base font-medium text-white">
-                    {subscribedToken.name}
+                    {tokenData.name}
                   </h1>
                   <p className="mt-1 text-xs uppercase text-[#ffffff7a]">
-                    {subscribedToken.ticker}
+                    {tokenData.ticker}
                   </p>
                 </div>
               </div>
               <div className="h-[1px] flex-grow bg-[#434447]" />
             </div>
             <DashboardMainContent
-              tokenName={subscribedToken.name}
-              tokenImage={subscribedToken.image}
-              tokenId={subscribedToken.id}
+              news={tokenData.news}
+              tokenName={tokenData.name}
+              tokenImage={tokenData.image}
+              tokenId={tokenData.id}
               setIsOpen={setIsOpen}
+              stats={tokenData.Statistics}
               handleNewsClick={handleNewsClick}
             />
           </div>
         );
-      })} */}
+      })}
 
       {newsDetails && (
         <PopNewsCard

@@ -1,5 +1,5 @@
+import { type Statistics, type News } from "@prisma/client";
 import { type NewsDetails } from "types/news";
-import { api } from "~/utils/api";
 import StickyTokenCard from "../Card/StickyTokenCard";
 import Star from "../Icons/Star";
 import DashboardNews from "./DashboardNews";
@@ -10,33 +10,43 @@ interface DashboardMainContentProps {
   tokenId: string;
   setIsOpen: (open: boolean) => void;
   handleNewsClick: (news: NewsDetails) => void;
+  stats: Statistics | null;
+  news: News[];
 }
 
 const DashboardMainContent = ({
   tokenName,
   tokenImage,
-  tokenId,
+  stats,
   setIsOpen,
   handleNewsClick,
+  news,
 }: DashboardMainContentProps) => {
-  const { data, isLoading } = api.dashboard.getNewsAndStatistics.useQuery();
+  console.log(news);
 
-  console.log({ data });
+  return (
+    <div className="z-10 mx-auto mt-10 flex flex-col gap-[50px] px-0 pb-20 sm:px-8 md:px-10 lg:mt-20 lg:flex-row lg:pr-[100px] xl:max-w-7xl xl:px-0 xl:pr-[70px]">
+      <div className="relative">
+        <StickyTokenCard
+          tokenName={tokenName}
+          image={tokenImage}
+          dayHighest={stats?.dayHighestPrice}
+          dayLowest={stats?.dayLowestPrice}
+          totalVolume={stats?.dayVolume}
+        />
+      </div>
 
-  if (isLoading && !data)
-    return (
-      <>
-        <div className="flex flex-col items-center justify-center py-32 text-white">
-          <Star />
-          <p className="mt-2 font-display text-xl">Fetching Data</p>
+      {news.length > 0 && (
+        <div className="grid flex-grow gap-10">
+          <DashboardNews
+            setIsOpen={setIsOpen}
+            news={news}
+            handleNewsClick={handleNewsClick}
+          />
         </div>
-      </>
-    );
-
-  if (!data && !isLoading)
-    return (
-      <>
-        <div className="flex flex-col items-center justify-center py-32 text-white">
+      )}
+      {(!news || news.length === 0) && (
+        <div className="flex w-full flex-col items-center justify-center text-white">
           <Star noAnimate />
           <h1 className="mt-5 text-center font-display text-3xl">
             We had a hiccup :(
@@ -46,29 +56,7 @@ const DashboardMainContent = ({
             backend. Please come here again ! Mean time click on other tokens !
           </p>
         </div>
-      </>
-    );
-
-  return (
-    <div className="z-10 mx-auto mt-10 flex flex-col gap-[50px] px-0 pb-20 sm:px-8 md:px-10 lg:mt-20 lg:flex-row lg:pr-[100px] xl:max-w-7xl xl:px-0 xl:pr-[70px]">
-      <div className="relative">
-        <StickyTokenCard
-          tokenName={tokenName}
-          image={tokenImage}
-          dayHighest={data?.Statistics?.dayHighestPrice}
-          dayLowest={data?.Statistics?.dayLowestPrice}
-          totalVolume={data?.Statistics?.dayVolume}
-        />
-      </div>
-      <div className="grid flex-grow gap-10">
-        {data?.news && (
-          <DashboardNews
-            setIsOpen={setIsOpen}
-            news={data?.news}
-            handleNewsClick={handleNewsClick}
-          />
-        )}
-      </div>
+      )}
     </div>
   );
 };
