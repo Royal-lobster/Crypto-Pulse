@@ -15,6 +15,7 @@ const SubscribedTokens = () => {
           <TokenCard
             key={i}
             name={token.name}
+            large={token.image}
             ticker={token.ticker}
             thumb={token.image}
             id={token.id}
