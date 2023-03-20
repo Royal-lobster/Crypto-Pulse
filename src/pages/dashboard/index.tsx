@@ -22,11 +22,14 @@ const Dashboard = () => {
   const { data: newsData, isLoading } =
     api.dashboard.getNewsAndStatistics.useQuery();
 
-  console.log(newsData);
-
   const handleNewsClick = (newsDetails: NewsDetails) => {
     setNewsDetails(newsDetails);
   };
+
+  const sortedNewsData = newsData?.slice();
+  sortedNewsData?.sort((a, b) => b.news.length - a.news.length);
+
+  if (isLoading && tokensIsLoading) return <DashboardLoader />;
 
   if (tokensIsLoading && !userSubsribedTokens && isLoading && !newsData)
     return <DashboardLoader />;
@@ -99,49 +102,52 @@ const Dashboard = () => {
         </div>
       </div>
 
-      {newsData?.map((tokenData, i) => {
-        return (
-          <div
-            key={`${tokenData?.id}-${i}`}
-            id={tokenData?.id}
-            ref={(ref) => {
-              if (ref && tokenData) {
-                subscribedTokenRefs.current[tokenData?.id] = ref;
-              }
-            }}
-            className={currentView === tokenData?.id ? "active" : ""}
-          >
-            <div className="relative z-10 mx-auto mt-10 flex items-center px-0 sm:px-8 md:px-10 lg:mt-20 lg:pr-[100px] xl:max-w-7xl xl:pr-[70px] xl:pl-0">
-              <div className="flex gap-3 rounded-xl border border-[#434447] py-3 px-10 pl-4">
-                <Image
-                  src={tokenData?.image}
-                  alt={tokenData?.name}
-                  width={48}
-                  height={48}
-                  className="h-[48px] w-[48px] rounded-full"
-                />
-                <div className="flex-grow items-center">
-                  <h1 className="font-display text-base font-medium text-white">
-                    {tokenData.name}
-                  </h1>
-                  <p className="mt-1 text-xs uppercase text-[#ffffff7a]">
-                    {tokenData.ticker}
-                  </p>
+      {sortedNewsData?.map((tokenData, i) => {
+        console.log(tokenData.news.length);
+        if (tokenData.news.length > 0) {
+          return (
+            <div
+              key={`${tokenData?.id}-${i}`}
+              id={tokenData?.id}
+              ref={(ref) => {
+                if (ref && tokenData) {
+                  subscribedTokenRefs.current[tokenData?.id] = ref;
+                }
+              }}
+              className={currentView === tokenData?.id ? "active" : ""}
+            >
+              <div className="relative z-10 mx-auto mt-10 flex items-center px-0 sm:px-8 md:px-10 lg:mt-20 lg:pr-[100px] xl:max-w-7xl xl:pr-[70px] xl:pl-0">
+                <div className="flex gap-3 rounded-xl border border-[#434447] py-3 px-10 pl-4">
+                  <Image
+                    src={tokenData?.image}
+                    alt={tokenData?.name}
+                    width={48}
+                    height={48}
+                    className="h-[48px] w-[48px] rounded-full"
+                  />
+                  <div className="flex-grow items-center">
+                    <h1 className="font-display text-base font-medium text-white">
+                      {tokenData.name}
+                    </h1>
+                    <p className="mt-1 text-xs uppercase text-[#ffffff7a]">
+                      {tokenData.ticker}
+                    </p>
+                  </div>
                 </div>
+                <div className="h-[1px] flex-grow bg-[#434447]" />
               </div>
-              <div className="h-[1px] flex-grow bg-[#434447]" />
+              <DashboardMainContent
+                news={tokenData.news}
+                tokenName={tokenData.name}
+                tokenImage={tokenData.image}
+                tokenId={tokenData.id}
+                setIsOpen={setIsOpen}
+                stats={tokenData.Statistics}
+                handleNewsClick={handleNewsClick}
+              />
             </div>
-            <DashboardMainContent
-              news={tokenData.news}
-              tokenName={tokenData.name}
-              tokenImage={tokenData.image}
-              tokenId={tokenData.id}
-              setIsOpen={setIsOpen}
-              stats={tokenData.Statistics}
-              handleNewsClick={handleNewsClick}
-            />
-          </div>
-        );
+          );
+        }
       })}
 
       {newsDetails && (
