@@ -1,21 +1,39 @@
-import { useRef, useState } from "react";
+import { useEffect, useState } from "react";
+import { type Coin } from "types/coin";
 import SearchIcon from "../../Icons/Search";
-import TokenList from "./TokenList";
-import Close from "~/components/Icons/Close";
+import TokensLoader from "../../loader/TokensLoader";
+import TokenCard from "./TokenCard";
 
 const SearchAndSelectTokens = () => {
   const [query, setQuery] = useState("");
-  const inputRef = useRef<HTMLInputElement>(null);
-  const [inputValue, setInputValue] = useState<string>("");
+  const [coinsData, setCoinsData] = useState<Coin[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    console.log("RUNNING", coinsData);
+    const getCoins = async () => {
+      setIsLoading(true);
+      try {
+        console.log(query);
+        const res = await fetch(
+          `https://api.coingecko.com/api/v3/search?query=${query}`
+        );
+        const data = (await res.json()) as { coins: Coin[] };
+        const coins = data.coins.slice(0, 24);
+        console.log(coins);
+        setCoinsData(coins);
+      } catch (error) {}
+    };
+    getCoins().finally(() => {
+      setIsLoading(false);
+    });
+  }, [query, coinsData]);
 
   const handleSearchSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setQuery(inputRef.current?.value as string);
-  };
-
-  const clearQuery = () => {
-    setInputValue("");
-    setQuery("");
+    const form = e.target as HTMLFormElement;
+    const input = form.elements[0] as HTMLInputElement;
+    setQuery(input.value);
   };
 
   return (
@@ -32,34 +50,31 @@ const SearchAndSelectTokens = () => {
             <SearchIcon />
           </div>
           <input
-            ref={inputRef}
-            value={inputValue}
             type="text"
             className="h-[60px] flex-1 appearance-none border-none bg-transparent pl-4 text-white outline-none placeholder:text-[#626262]"
             placeholder="Search for token"
-            onChange={(e) => {
-              setInputValue(e.target?.value);
-            }}
           />
-          {inputValue?.length > 0 && (
-            <button
-              className="mr-6 flex items-center text-white"
-              onClick={clearQuery}
-            >
-              <Close />
-            </button>
-          )}
-          <button
-            onClick={() => {
-              setQuery(inputRef.current?.value as string);
-            }}
-            className="h-[45px] cursor-pointer self-center rounded-xl bg-[#FF5CAA] px-6 font-display text-white"
-          >
+          <button className="h-[45px] cursor-pointer self-center rounded-xl bg-[#FF5CAA] px-6 font-display text-white">
             Search
           </button>
         </form>
       </div>
-      <TokenList query={query} />
+      {isLoading || !coinsData ? (
+        <TokensLoader />
+      ) : (
+        <div className="mt-14 grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
+          {coinsData.splice(0, 24).map((coin) => (
+            <TokenCard
+              id={coin.id}
+              image={coin.image}
+              key={coin.id}
+              thumb={coin.large as string}
+              name={coin.name}
+              ticker={coin.symbol}
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 };
