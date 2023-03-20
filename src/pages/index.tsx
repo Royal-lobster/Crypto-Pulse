@@ -33,7 +33,7 @@ const Home: NextPage = () => {
   const { isConnected } = useAccount();
 
   return (
-    <main className=" pb-32">
+    <main className="pb-10">
       <div className="relative z-10 mx-auto mt-20 max-w-7xl">
         <Hero />
         {isConnected ? <TokensSection /> : <MarketingSection />}

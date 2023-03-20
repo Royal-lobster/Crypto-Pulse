@@ -3,6 +3,7 @@ import { ConnectButton } from "@rainbow-me/rainbowkit";
 import React, { useCallback, useEffect, useState } from "react";
 import { getBoringAvatar } from "~/utils/getBoringAvatar";
 import { getUserHiIQBalance } from "~/utils/getUserHiIQValue";
+import { WalletIcon } from "@heroicons/react/24/outline";
 
 interface UserAvatarProps extends React.HTMLAttributes<HTMLDivElement> {
   address?: string;
@@ -99,9 +100,10 @@ const CustomConnectButton = ({ address }: { address: string }) => {
                   <button
                     onClick={openConnectModal}
                     type="button"
-                    className="cursor-pointer rounded-xl bg-[#FF5CAA] py-2 px-4 font-display text-white"
+                    className="flex cursor-pointer items-center gap-2 rounded-xl bg-[#FF5CAA] py-2 px-4 font-display text-white"
                   >
-                    Connect Wallet
+                    <WalletIcon className="w-5" />
+                    Connect
                   </button>
                 );
               }
