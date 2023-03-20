@@ -3,7 +3,6 @@ import ArrowDown from "~/components/Icons/ArrowDown";
 import DashboardLoader from "~/components/loader/DashboardLoader";
 import { api } from "~/utils/api";
 import { getCurrentDate } from "~/utils/getCurrentDate";
-import { Tab } from "@headlessui/react";
 import DashboardMainContent from "~/components/dashboard/DashboardMainContent";
 import { useState } from "react";
 import PopNewsCard from "~/components/Card/PopNewsCard";
@@ -16,6 +15,7 @@ const Dashboard = () => {
   const [newsDetails, setNewsDetails] = useState<NewsDetails>();
   const { isLoading: tokensIsLoading, data: userSubsribedTokens } =
     api.dashboard.getUserSubscribedTokens.useQuery();
+  const [currentView, setCurrentView] = useState<string>();
 
   const { data: newsData, isLoading } =
     api.dashboard.getNewsAndStatistics.useQuery();
@@ -56,6 +56,7 @@ const Dashboard = () => {
           this page !
         </p>
       </div>
+
       <div className="mx-0 mt-10 flex items-center gap-4 rounded-xl border border-[#434447] pl-8 pr-3 sm:mx-8 md:mx-10 lg:fixed lg:top-1/2 lg:right-[20px] lg:mt-0 lg:flex lg:-translate-y-1/2 lg:flex-col lg:justify-center lg:gap-0 lg:py-5 lg:px-0 lg:pr-0 xl:right-[50px] xl:mx-0">
         <div className="flex flex-shrink-0 items-center justify-center gap-4 py-2.5  text-[#ffffff7a] lg:flex-col  lg:px-2.5 lg:pt-5">
           <div className="self-center text-xs uppercase lg:rotate-[270deg]">
@@ -71,6 +72,9 @@ const Dashboard = () => {
             <button
               key={subsribedToken.id}
               className="flex-shrink-0 cursor-pointer"
+              onClick={() => {
+                setCurrentView(subsribedToken.id);
+              }}
             >
               <Image
                 src={subsribedToken.image}
