@@ -34,6 +34,7 @@ const DashboardNews = ({
           key={dashboardNews.id}
           id={dashboardNews.id}
           title={dashboardNews.title}
+          link={dashboardNews.id}
           date={dashboardNews.createdAt}
           description={dashboardNews.description as string}
           newsImage={dashboardNews.image as string}

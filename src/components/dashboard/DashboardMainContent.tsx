@@ -26,9 +26,9 @@ const DashboardMainContent = ({
   if (isLoading && !data)
     return (
       <>
-        <div className="flex flex-col items-center justify-center py-32 text-white">
+        <div className="flex flex-col items-center justify-center py-32 text-[#a9a9aa] text-white">
           <Star />
-          <p className="mt-2 font-display text-2xl">Fetching Data</p>
+          <p className="mt-2 font-display text-xl">Fetching Data</p>
         </div>
       </>
     );
@@ -58,7 +58,6 @@ const DashboardMainContent = ({
           dayHighest={data?.Statistics?.dayHighestPrice}
           dayLowest={data?.Statistics?.dayLowestPrice}
           totalVolume={data?.Statistics?.dayVolume}
-          isLoading={isLoading}
         />
       </div>
       <div className="grid flex-grow gap-10">

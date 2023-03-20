@@ -14,14 +14,7 @@ const DashBoardGoButton = () => {
           disabled={isFetching > 0}
           data-disabled={isFetching > 0 || undefined}
           onClick={() => {
-            router
-              .push("/dashboard")
-              .then(() => {
-                console.log("Navigation successful");
-              })
-              .catch((error) => {
-                console.error(error);
-              });
+            router.push("/dashboard").catch((e) => console.log(e));
           }}
           className="cursor-pointer rounded-xl bg-[#FF5CAA] py-2 px-8 font-display text-white data-[disabled]:bg-[#A44D76]"
         >
