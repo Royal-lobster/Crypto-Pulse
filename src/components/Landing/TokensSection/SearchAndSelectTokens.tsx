@@ -4,6 +4,7 @@ import { useHiIQTokensLeft } from "~/hooks/useHiIQTokensLeft";
 import SearchIcon from "../../Icons/Search";
 import TokensLoader from "../../loader/TokensLoader";
 import TokenCard from "./TokenCard";
+import { Popover } from "@headlessui/react";
 
 const SearchAndSelectTokens = () => {
   const [query, setQuery] = useState("");
@@ -42,10 +43,39 @@ const SearchAndSelectTokens = () => {
           <h1 className="self-center font-display text-2xl font-bold ">
             Select your Tokens !
           </h1>
-          <p className="mt-3 max-w-sm font-display text-lg">
+          <div className="mt-3 max-w-sm font-display text-lg">
             You have <b>{userHiIQ} HiIQ.</b> You can select up to{" "}
-            <b>{tokensLimit}</b> Tokens.
-          </p>
+            <Popover className="relative">
+              <Popover.Button className="underline decoration-gray-500 decoration-dotted underline-offset-4">
+                <b>{tokensLimit}</b> Tokens.
+              </Popover.Button>
+              <Popover.Panel className="absolute z-10 mt-2 rounded-md bg-darkAccent p-4">
+                <p className="text-sm text-white">
+                  <span className="block rounded-md bg-secondary p-3 text-center">
+                    You can choose up the tokens depending on your HiIQ balance.
+                  </span>
+                  <ul className="mx-auto mt-3 max-w-[70%] divide-y divide-white/10">
+                    <li className="flex justify-between">
+                      <span>3 tokens</span>{" "}
+                      <span className="text-right">Free</span>
+                    </li>
+                    <li className="flex justify-between">
+                      <span>5 tokens</span>{" "}
+                      <span className="text-right"> &gt; 10k HiIQ</span>
+                    </li>
+                    <li className="flex justify-between">
+                      <span>10 tokens</span>{" "}
+                      <span className="text-right"> &gt; 100k HiIQ</span>
+                    </li>
+                    <li className="flex justify-between">
+                      <span>15 tokens</span>{" "}
+                      <span className="text-right"> &gt; 1M HiIQ</span>
+                    </li>
+                  </ul>
+                </p>
+              </Popover.Panel>
+            </Popover>
+          </div>
         </div>
         <form
           onSubmit={handleSearchSubmit}

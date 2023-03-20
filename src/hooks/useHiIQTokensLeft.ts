@@ -21,8 +21,8 @@ export const useHiIQTokensLeft = () => {
   if (!userHiIQ) {
     tokensLimit = 3;
   } else if (userHiIQ > 1000000) {
-    tokensLimit = 50;
-  } else if (userHiIQ > 500000) {
+    tokensLimit = 15;
+  } else if (userHiIQ > 100000) {
     tokensLimit = 10;
   } else if (userHiIQ > 10000) {
     tokensLimit = 5;
