@@ -16,17 +16,18 @@ const TokenCard = ({ large, name, ticker, thumb, id }: TokenCardProps) => {
   const tokenIsChecked = useSubscriptionsStore((state) =>
     state.tokens.find((token) => token.id === id)
   );
-  const [isChecked, setIsChecked] = useState(!!tokenIsChecked);
   const { mutate: mutateRemove } = api.token.removeToken.useMutation();
   const { mutate: mutateAdd } = api.token.addToken.useMutation();
   const removeToken = useSubscriptionsStore((state) => state.removeToken);
   const addToken = useSubscriptionsStore((state) => state.addToken);
   const { tokensLeft } = useHiIQTokensLeft();
+  const isChecked = !!useSubscriptionsStore((state) =>
+    state.tokens.find((token) => token.id === id)
+  );
   const isDisabled = tokensLeft <= 0 && !isChecked;
 
   const handleTokenClick = () => {
     if (isDisabled) return;
-    setIsChecked(!isChecked);
     if (isChecked) {
       mutateRemove({ tokenId: id });
       removeToken(id);

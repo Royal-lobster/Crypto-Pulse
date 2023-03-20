@@ -72,13 +72,6 @@ export const dashboardRouter = createTRPCRouter({
     if (tokensToBeRefreshed.length === 0) return tokens;
 
     // ======================
-    // create function to check if news already exists
-    // ======================
-    const newsExists = (url?: string) => {
-      return !!tokens.find((t) => t.news.find((n) => n.id === url));
-    };
-
-    // ======================
     // fetch news and statistics
     // ======================
 
@@ -89,8 +82,7 @@ export const dashboardRouter = createTRPCRouter({
     );
     const news = await getPastDayNews(
       tokensToBeRefreshed.map((t) => t.ticker),
-      1,
-      newsExists
+      1
     );
 
     if (!news)
@@ -118,7 +110,9 @@ export const dashboardRouter = createTRPCRouter({
           tokenId: tokens.find((t) => t.ticker === n.ticker)?.id as string,
         })),
       }),
-
+      prisma.statistics.deleteMany({
+        where: { tokenId: { in: tokens.map((t) => t.id) } },
+      }),
       prisma.statistics.createMany({
         skipDuplicates: true,
         data: stats.map((s) => ({

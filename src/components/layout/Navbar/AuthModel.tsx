@@ -20,10 +20,10 @@ const AuthModel = () => {
       onClose={() => setIsOpen(false)}
       className="relative z-50"
     >
-      <div className="fixed inset-0 bg-black/100" aria-hidden="true" />
+      <div className="fixed inset-0 bg-black/60" aria-hidden="true" />
       <div className="fixed inset-0 flex items-center justify-center p-4">
         <Dialog.Panel className="z-10 flex w-[450px] flex-col items-center justify-center rounded-xl bg-[#27282C] px-[30px] py-[40px]">
-          <h1 className="text-center font-inter font-bold text-white">
+          <h1 className="text-center font-inter text-2xl font-bold text-white">
             Authenticate your Wallet
           </h1>
           <p className="mt-7 text-center font-inter font-normal text-white">

@@ -22,6 +22,8 @@ const Dashboard = () => {
   const { data: newsData, isLoading } =
     api.dashboard.getNewsAndStatistics.useQuery();
 
+  console.log(newsData);
+
   const handleNewsClick = (newsDetails: NewsDetails) => {
     setNewsDetails(newsDetails);
   };
