@@ -33,7 +33,7 @@ export const dashboardRouter = createTRPCRouter({
     // ======================
     // get all tokens subscribed by user
     // ======================
-    const token = (
+    const tokens = (
       await prisma.user.findUnique({
         where: { id: userAddress },
         select: {
@@ -47,7 +47,7 @@ export const dashboardRouter = createTRPCRouter({
       })
     )?.tokens;
 
-    if (!token)
+    if (!tokens)
       throw new TRPCError({
         code: "BAD_REQUEST",
         message: "User not subscribed to token",
@@ -59,7 +59,7 @@ export const dashboardRouter = createTRPCRouter({
 
     const tokensToBeRefreshed: Token[] = [];
 
-    for (const t of token) {
+    for (const t of tokens) {
       const now = new Date();
       if (
         !t.lastRefresh ||
@@ -68,6 +68,8 @@ export const dashboardRouter = createTRPCRouter({
         tokensToBeRefreshed.push(t);
       }
     }
+
+    if (tokensToBeRefreshed.length === 0) return tokens;
 
     // ======================
     // fetch news and statistics
@@ -89,25 +91,30 @@ export const dashboardRouter = createTRPCRouter({
         message: "Error fetching news",
       });
 
-    const response = await prisma.$transaction([
+    await prisma.$transaction([
       prisma.token.updateMany({
-        where: { id: { in: token.map((t) => t.id) } },
+        where: { id: { in: tokens.map((t) => t.id) } },
         data: {
           lastRefresh: new Date(),
         },
       }),
       prisma.news.createMany({
+        skipDuplicates: true,
         data: news.map((n) => ({
           id: n.url,
+          createdAt: new Date(n.createdAt),
           title: n.title,
           rawContent: n.rawContent,
-          url: n.url,
-          createdAt: new Date(n.createdAt),
-          tokenId: token.find((t) => t.ticker === n.ticker)?.id as string,
+          description: n.description,
+          image: n.image,
+          tokenId: tokens.find((t) => t.ticker === n.ticker)?.id as string,
         })),
       }),
-
+      prisma.statistics.deleteMany({
+        where: { tokenId: { in: stats.map((t) => t.coinId) } },
+      }),
       prisma.statistics.createMany({
+        skipDuplicates: true,
         data: stats.map((s) => ({
           id: s.coinId,
           dayHighestPrice: s.pastDayHighestPrice,
@@ -118,7 +125,21 @@ export const dashboardRouter = createTRPCRouter({
       }),
     ]);
 
-    return response;
+    const updatedTokens = (
+      await prisma.user.findUnique({
+        where: { id: userAddress },
+        select: {
+          tokens: {
+            include: {
+              news: true,
+              Statistics: true,
+            },
+          },
+        },
+      })
+    )?.tokens;
+
+    return updatedTokens;
   }),
 
   getCondensedNews: protectedProcedure

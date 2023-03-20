@@ -43,7 +43,8 @@ const fetchCryptoPanicArticles = async (
       fetchedNewsArticles.set(ticker, topNews);
       console.log(`🌴 | cryptopanic fetch success for ${ticker}`);
     } catch (e) {
-      console.error(`❌ cryptopanic fetch fail for ${ticker}`);
+      const msg = e as { message: string };
+      console.error(`❌ cryptopanic fetch fail for ${ticker}`, msg);
     }
   }
   return fetchedNewsArticles;

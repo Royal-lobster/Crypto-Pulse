@@ -3,29 +3,41 @@ import ArrowDown from "~/components/Icons/ArrowDown";
 import DashboardLoader from "~/components/loader/DashboardLoader";
 import { api } from "~/utils/api";
 import { getCurrentDate } from "~/utils/getCurrentDate";
-import { Tab } from "@headlessui/react";
 import DashboardMainContent from "~/components/dashboard/DashboardMainContent";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import PopNewsCard from "~/components/Card/PopNewsCard";
 import { type NewsDetails } from "types/news";
 import Star from "~/components/Icons/Star";
 import Link from "next/link";
+import QuietTokensCard from "~/components/Card/QuietTokenCard";
 
 const Dashboard = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [newsDetails, setNewsDetails] = useState<NewsDetails>();
   const { isLoading: tokensIsLoading, data: userSubsribedTokens } =
     api.dashboard.getUserSubscribedTokens.useQuery();
+  const [currentView, setCurrentView] = useState<string>();
+
+  const subscribedTokenRefs = useRef<{ [key: string]: HTMLDivElement }>({});
+
+  const { data: newsData, isLoading } =
+    api.dashboard.getNewsAndStatistics.useQuery();
 
   const handleNewsClick = (newsDetails: NewsDetails) => {
     setNewsDetails(newsDetails);
   };
 
-  if (tokensIsLoading && !userSubsribedTokens) return <DashboardLoader />;
+  const sortedNewsData = newsData?.slice();
+  sortedNewsData?.sort((a, b) => b.news.length - a.news.length);
 
-  if (userSubsribedTokens?.length === 0)
+  if (isLoading && tokensIsLoading) return <DashboardLoader />;
+
+  if (tokensIsLoading && !userSubsribedTokens && isLoading && !newsData)
+    return <DashboardLoader />;
+
+  if (userSubsribedTokens?.length === 0 || (!userSubsribedTokens && !isLoading))
     return (
-      <div className="flex min-h-[calc(100vh-90px)] flex-col items-center justify-center py-32 text-white">
+      <div className="flex min-h-[calc(100vh-300px)] flex-col items-center justify-center py-32 text-white">
         <Star noAnimate />
         <h1 className="mt-5 text-center font-display text-3xl">
           No Tokens subscribed
@@ -43,79 +55,128 @@ const Dashboard = () => {
 
   return (
     <>
-      <Tab.Group defaultIndex={0}>
-        <div className="relative z-10 mx-auto mt-10 w-full px-6 sm:px-8 md:mt-20 md:px-10 xl:max-w-7xl xl:px-0">
-          <h1 className="font-inter text-2xl font-black text-white sm:text-3xl md:text-5xl">
-            Briefing for {getCurrentDate(Date.now())}
+      <div className="relative z-10 mx-auto mt-10 w-full px-0 sm:px-8 md:mt-20 md:px-10 xl:max-w-7xl xl:px-0">
+        <h1 className="font-inter text-2xl font-black text-white sm:text-3xl md:text-5xl">
+          Briefing for {getCurrentDate(Date.now())}
+        </h1>
+        <p className="mt-5 w-full font-display text-base font-normal leading-6 text-white opacity-60 sm:w-3/4 md:mt-8 md:w-[60%] md:text-lg xl:w-[50%]">
+          Briefing for your subscribed favourite tokens. Make sure to bookmark
+          this page !
+        </p>
+      </div>
+
+      <div className="mx-0 mt-10 flex items-center gap-4 rounded-xl border border-[#434447] pl-8 pr-3 sm:mx-8 md:mx-10 lg:fixed lg:top-1/2 lg:right-[20px] lg:mt-0 lg:flex lg:-translate-y-1/2 lg:flex-col lg:justify-center lg:gap-0 lg:py-5 lg:px-0 lg:pr-0 xl:right-[50px] xl:mx-0">
+        <div className="flex flex-shrink-0 items-center justify-center gap-4 py-2.5  text-[#ffffff7a] lg:flex-col  lg:px-2.5 lg:pt-5">
+          <div className="self-center text-xs uppercase lg:rotate-[270deg]">
+            <p>GO TO</p>
+          </div>
+          <span className="hidden lg:block">
+            <ArrowDown />
+          </span>
+        </div>
+        <div className="mt-3 hidden h-[1px] w-full flex-grow bg-[#434447] lg:block" />
+        <div className="flex justify-center gap-3 overflow-scroll border-l border-[#434447] py-2.5 pl-3 lg:flex-col lg:justify-start lg:overflow-hidden lg:border-l-0 lg:py-0 lg:px-2.5 lg:pl-2.5 lg:pt-4">
+          {userSubsribedTokens?.map((subscribedToken) => (
+            <button
+              key={subscribedToken.id}
+              className="flex-shrink-0 cursor-pointer"
+              onClick={() => {
+                if (subscribedToken) {
+                  setCurrentView(subscribedToken.id);
+                  if (subscribedTokenRefs.current[subscribedToken.id]) {
+                    subscribedTokenRefs.current[
+                      subscribedToken?.id
+                    ]?.scrollIntoView({ behavior: "smooth" });
+                  }
+                }
+              }}
+            >
+              <Image
+                src={subscribedToken.image}
+                alt={subscribedToken.id}
+                width={36}
+                height={36}
+                className="h-[36px] w-[36px] rounded-full"
+              />
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {sortedNewsData?.map((tokenData, i) => {
+        if (tokenData.news.length > 0) {
+          return (
+            <div
+              key={`${tokenData?.id}-${i}`}
+              id={tokenData?.id}
+              ref={(ref) => {
+                if (ref && tokenData) {
+                  subscribedTokenRefs.current[tokenData?.id] = ref;
+                }
+              }}
+              className={currentView === tokenData?.id ? "active" : ""}
+            >
+              <div className="relative z-10 mx-auto mt-10 flex items-center px-0 sm:px-8 md:px-10 lg:mt-20 lg:pr-[100px] xl:max-w-7xl xl:pr-[70px] xl:pl-0">
+                <div className="flex gap-3 rounded-xl border border-[#434447] py-3 px-10 pl-4">
+                  <Image
+                    src={tokenData?.image}
+                    alt={tokenData?.name}
+                    width={48}
+                    height={48}
+                    className="h-[48px] w-[48px] rounded-full"
+                  />
+                  <div className="flex-grow items-center">
+                    <h1 className="font-display text-base font-medium text-white">
+                      {tokenData.name}
+                    </h1>
+                    <p className="mt-1 text-xs uppercase text-[#ffffff7a]">
+                      {tokenData.ticker}
+                    </p>
+                  </div>
+                </div>
+                <div className="h-[1px] flex-grow bg-[#434447]" />
+              </div>
+              <DashboardMainContent
+                news={tokenData.news}
+                tokenName={tokenData.name}
+                tokenImage={tokenData.image}
+                tokenId={tokenData.id}
+                setIsOpen={setIsOpen}
+                stats={tokenData.Statistics}
+                handleNewsClick={handleNewsClick}
+              />
+            </div>
+          );
+        }
+      })}
+      {sortedNewsData?.some((newsData) => newsData.news.length === 0) && (
+        <div className="mt-20 border-t border-[#434447] pt-12 lg:w-[calc(100%-100px)] xl:w-[calc(100%-70px)]">
+          <h1 className="font-display text-2xl font-bold text-white">
+            Quiet tokens yesterday
           </h1>
           <p className="mt-5 w-full font-display text-base font-normal leading-6 text-white opacity-60 sm:w-3/4 md:mt-8 md:w-[60%] md:text-lg xl:w-[50%]">
-            Briefing for your subscribed favourite tokens. Make sure to bookmark
-            this page !
+            Tokens that have no news items yesterday. But don’t worry ! Here are
+            your daily stats for the tokens you love.
           </p>
-        </div>
-        <div className="mx-6 mt-10 flex items-center gap-4 rounded-xl border border-[#434447] py-2.5 px-8 sm:mx-8 md:mx-10 lg:fixed lg:top-1/2 lg:right-[20px] lg:mt-0 lg:flex lg:-translate-y-1/2 lg:flex-col lg:justify-center lg:gap-0 lg:py-5 lg:px-0 xl:right-[50px] xl:mx-0">
-          <div className="flex items-center justify-center gap-4 text-[#ffffff7a] lg:flex-col lg:px-2.5 lg:pt-5">
-            <div className="self-center text-xs uppercase lg:rotate-[270deg]">
-              <p>GO TO</p>
-            </div>
-            <span className="hidden lg:block">
-              <ArrowDown />
-            </span>
-          </div>
-          <div className="mt-3 hidden h-[1px] w-full flex-grow bg-[#434447] lg:block" />
-          <Tab.List>
-            <div className="flex justify-center gap-3 lg:flex-col lg:justify-start lg:px-2.5 lg:pt-4">
-              {userSubsribedTokens?.map((subsribedToken) => (
-                <Tab key={subsribedToken.id}>
-                  <Image
-                    src={subsribedToken.image}
-                    alt={subsribedToken.id}
-                    width={36}
-                    height={36}
-                    className="h-[36px] w-[36px] rounded-full"
+          <div className="mt-10 grid grid-cols-2 gap-4 md:grid-cols-3">
+            {sortedNewsData.map((newsData) => {
+              if (newsData.news.length === 0) {
+                return (
+                  <QuietTokensCard
+                    key={newsData.Statistics?.id}
+                    tokenName={newsData.name}
+                    totalVolume={newsData.Statistics?.dayVolume}
+                    dayHighest={newsData.Statistics?.dayHighestPrice}
+                    dayLowest={newsData.Statistics?.dayLowestPrice}
+                    image={newsData.image}
                   />
-                </Tab>
-              ))}
-            </div>
-          </Tab.List>
+                );
+              }
+            })}
+          </div>
         </div>
+      )}
 
-        <Tab.Panels>
-          {userSubsribedTokens?.map((subscribedToken, i) => {
-            return (
-              <Tab.Panel key={`${subscribedToken.id}-${i}`}>
-                <div className="relative z-10 mx-auto mt-10 flex items-center px-6 sm:px-8 md:px-10 lg:mt-20 lg:pr-[100px] xl:max-w-7xl xl:pr-[70px] xl:pl-0">
-                  <div className="flex gap-3 rounded-xl border border-[#434447] py-3 px-10 pl-4">
-                    <Image
-                      src={subscribedToken.image}
-                      alt={subscribedToken.name}
-                      width={48}
-                      height={48}
-                      className="h-[48px] w-[48px] rounded-full"
-                    />
-                    <div className="flex-grow items-center">
-                      <h1 className="font-display text-base font-medium text-white">
-                        {subscribedToken.name}
-                      </h1>
-                      <p className="mt-1 text-xs uppercase text-[#ffffff7a]">
-                        {subscribedToken.ticker}
-                      </p>
-                    </div>
-                  </div>
-                  <div className="h-[1px] flex-grow bg-[#434447]" />
-                </div>
-                <DashboardMainContent
-                  tokenName={subscribedToken.name}
-                  tokenImage={subscribedToken.image}
-                  tokenId={subscribedToken.id}
-                  setIsOpen={setIsOpen}
-                  handleNewsClick={handleNewsClick}
-                />
-              </Tab.Panel>
-            );
-          })}
-        </Tab.Panels>
-      </Tab.Group>
       {newsDetails && (
         <PopNewsCard
           isOpen={isOpen}

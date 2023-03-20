@@ -1,32 +1,33 @@
 import Image from "next/image";
 import { useState } from "react";
+import { useHiIQTokensLeft } from "~/hooks/useHiIQTokensLeft";
 import { useSubscriptionsStore } from "~/store/subscriptions";
 import { api } from "~/utils/api";
 
 type TokenCardProps = {
   id: string;
-  image?: {
-    large: string;
-    thumb: string;
-    small: string;
-  };
+  large: string;
   thumb?: string;
   name: string;
   ticker: string;
 };
 
-const TokenCard = ({ image, name, ticker, thumb, id }: TokenCardProps) => {
+const TokenCard = ({ large, name, ticker, thumb, id }: TokenCardProps) => {
   const tokenIsChecked = useSubscriptionsStore((state) =>
     state.tokens.find((token) => token.id === id)
   );
-  const [isChecked, setIsChecked] = useState(!!tokenIsChecked);
   const { mutate: mutateRemove } = api.token.removeToken.useMutation();
   const { mutate: mutateAdd } = api.token.addToken.useMutation();
   const removeToken = useSubscriptionsStore((state) => state.removeToken);
   const addToken = useSubscriptionsStore((state) => state.addToken);
+  const { tokensLeft } = useHiIQTokensLeft();
+  const isChecked = !!useSubscriptionsStore((state) =>
+    state.tokens.find((token) => token.id === id)
+  );
+  const isDisabled = tokensLeft <= 0 && !isChecked;
 
   const handleTokenClick = () => {
-    setIsChecked(!isChecked);
+    if (isDisabled) return;
     if (isChecked) {
       mutateRemove({ tokenId: id });
       removeToken(id);
@@ -35,14 +36,14 @@ const TokenCard = ({ image, name, ticker, thumb, id }: TokenCardProps) => {
       mutateAdd({
         tokenId: id,
         tickerId: ticker,
-        tokenImg: image?.large as string,
+        tokenImg: large,
         tokenName: name,
       });
       addToken({
         id,
         name,
         ticker: ticker,
-        image: image?.large as string,
+        image: large,
       });
     }
   };
@@ -51,11 +52,12 @@ const TokenCard = ({ image, name, ticker, thumb, id }: TokenCardProps) => {
     <div
       onClick={handleTokenClick}
       data-checked={tokenIsChecked || isChecked || undefined}
-      className="flex cursor-pointer items-center rounded-xl py-2.5 px-4 outline-[#5d5f62] hover:shadow-lg hover:outline data-[checked]:bg-[#3D4045]"
+      data-disabled={isDisabled || undefined}
+      className="flex cursor-pointer items-center rounded-xl py-2.5 px-4 outline-[#5d5f62] hover:shadow-lg  hover:outline data-[disabled]:cursor-auto data-[checked]:bg-[#3D4045] data-[disabled]:opacity-50 data-[disabled]:shadow-none data-[disabled]:outline-none"
     >
       <div className="flex w-full items-center gap-3">
         <Image
-          src={thumb ? thumb : (image?.large as string)}
+          src={thumb ? thumb : large}
           alt={name}
           width={40}
           height={40}
@@ -71,6 +73,7 @@ const TokenCard = ({ image, name, ticker, thumb, id }: TokenCardProps) => {
         </div>
         <div className="relative ml-auto text-[#FFFBFB]">
           <input
+            disabled={isDisabled}
             type="checkbox"
             name="token"
             checked={isChecked}
