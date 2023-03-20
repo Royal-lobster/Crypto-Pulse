@@ -9,6 +9,7 @@ import PopNewsCard from "~/components/Card/PopNewsCard";
 import { type NewsDetails } from "types/news";
 import Star from "~/components/Icons/Star";
 import Link from "next/link";
+import QuietTokensCard from "~/components/Card/QuietTokenCard";
 
 const Dashboard = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -103,7 +104,6 @@ const Dashboard = () => {
       </div>
 
       {sortedNewsData?.map((tokenData, i) => {
-        console.log(tokenData.news.length);
         if (tokenData.news.length > 0) {
           return (
             <div
@@ -149,6 +149,33 @@ const Dashboard = () => {
           );
         }
       })}
+      {sortedNewsData?.some((newsData) => newsData.news.length === 0) && (
+        <div className="mt-20 border-t border-[#434447] pt-12 lg:w-[calc(100%-100px)] xl:w-[calc(100%-70px)]">
+          <h1 className="font-display text-2xl font-bold text-white">
+            Quiet tokens yesterday
+          </h1>
+          <p className="mt-5 w-full font-display text-base font-normal leading-6 text-white opacity-60 sm:w-3/4 md:mt-8 md:w-[60%] md:text-lg xl:w-[50%]">
+            Tokens that have no news items yesterday. But don’t worry ! Here are
+            your daily stats for the tokens you love.
+          </p>
+          <div className="mt-10 grid grid-cols-2 gap-4 md:grid-cols-3">
+            {sortedNewsData.map((newsData) => {
+              if (newsData.news.length === 0) {
+                return (
+                  <QuietTokensCard
+                    key={newsData.Statistics?.id}
+                    tokenName={newsData.name}
+                    totalVolume={newsData.Statistics?.dayVolume}
+                    dayHighest={newsData.Statistics?.dayHighestPrice}
+                    dayLowest={newsData.Statistics?.dayLowestPrice}
+                    image={newsData.image}
+                  />
+                );
+              }
+            })}
+          </div>
+        </div>
+      )}
 
       {newsDetails && (
         <PopNewsCard

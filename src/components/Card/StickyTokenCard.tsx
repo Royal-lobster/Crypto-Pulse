@@ -1,9 +1,5 @@
 import Image from "next/image";
-
-// eslint-disable-next-line @typescript-eslint/unbound-method
-const numFormatter = Intl.NumberFormat("en", {
-  notation: "standard",
-}).format;
+import { numFormatter } from "~/utils/numberFormatter";
 
 interface StickyTokenCardProps {
   image?: string;
