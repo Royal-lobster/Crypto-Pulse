@@ -3,13 +3,18 @@ import axios, { type AxiosResponse } from "axios";
 import { env } from "~/env.mjs";
 import { type ResponseData as CryptoPanicResponseData } from "~/types/cryptopanic";
 
-export const getPastDayNews = async (coinTickers: string[], days: number) => {
+export const getPastDayNews = async (
+  coinTickers: string[],
+  days: number,
+  newsExists?: (url?: string) => boolean
+) => {
   console.log(`\n🏬 Fetching news for ${coinTickers.join(", ")}...`);
   const fetchedNewsArticles = await fetchCryptoPanicArticles(coinTickers, days);
   console.log(`\n🦾 Scrapping news from the fetched articles...`);
   const scrappedArticles = await getScrappedArticles(
     coinTickers,
-    fetchedNewsArticles
+    fetchedNewsArticles,
+    newsExists
   );
   return scrappedArticles;
 };
@@ -78,7 +83,8 @@ const scrapArticle = async (url: string) => {
 
 const getScrappedArticles = async (
   coinTickers: string[],
-  fetchedNewsArticles: Map<string, CryptoPanicResponseData["results"]>
+  fetchedNewsArticles: Map<string, CryptoPanicResponseData["results"]>,
+  newsExists?: (url?: string) => boolean
 ) => {
   const scrappedArticles = [];
   for (const ticker of coinTickers) {
@@ -93,7 +99,10 @@ const getScrappedArticles = async (
         (async () => {
           const scrapperRes = await scrapArticle(url);
           console.log(`🗞️ | ${result.title}`);
-          if (scrapperRes) {
+          if (
+            scrapperRes &&
+            (newsExists ? newsExists(scrapperRes.url) : true)
+          ) {
             return {
               ticker,
               title: result.title,

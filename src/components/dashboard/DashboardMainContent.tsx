@@ -21,7 +21,7 @@ const DashboardMainContent = ({
 }: DashboardMainContentProps) => {
   const { data, isLoading } = api.dashboard.getNewsAndStatistics.useQuery();
 
-  console.log(data);
+  console.log({ data });
 
   if (isLoading && !data)
     return (
