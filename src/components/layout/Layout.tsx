@@ -1,11 +1,13 @@
 import React from "react";
-import Nav from "../navbar";
+import Nav from "./Navbar";
+import Footer from "./Footer";
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
   return (
     <main className="relative min-h-screen">
       <Nav />
-      {children}
+      <div className="container mx-auto p-4">{children}</div>
+      <Footer />
     </main>
   );
 };

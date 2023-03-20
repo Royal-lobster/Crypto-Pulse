@@ -19,6 +19,7 @@ export const getBananaSummary = async (rawContent: string) => {
       },
     }
   );
+
   console.timeEnd("⏱️ Summary generation");
 
   const aiGeneratedContent =

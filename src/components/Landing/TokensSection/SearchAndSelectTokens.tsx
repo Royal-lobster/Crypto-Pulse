@@ -1,19 +1,26 @@
 import { useRef, useState } from "react";
-import SearchIcon from "../Icons/Search";
-import SelectToken from "./SelectToken";
+import SearchIcon from "../../Icons/Search";
 import TokenList from "./TokenList";
 
-const AllTokens = () => {
+const SearchAndSelectTokens = () => {
   const [query, setQuery] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
 
+  const handleSearchSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setQuery(inputRef.current?.value as string);
+  };
+
   return (
     <div className="mt-28">
-      <div className="flex justify-between">
+      <div className="flex flex-col justify-between gap-4 lg:flex-row">
         <h1 className="self-center font-display text-2xl font-bold text-white">
           Select your Tokens !
         </h1>
-        <div className="flex h-[60px] w-full max-w-lg rounded-xl bg-[#1A1B1F] pr-2.5 shadow-md">
+        <form
+          onSubmit={handleSearchSubmit}
+          className="flex h-[60px] w-full max-w-lg rounded-xl bg-[#1A1B1F] pr-2.5 shadow-md"
+        >
           <div className="flex h-[60px] w-[60px] items-center justify-center rounded-l-xl bg-[#3D4045] text-[#a4a4a49b]">
             <SearchIcon />
           </div>
@@ -21,7 +28,6 @@ const AllTokens = () => {
             type="text"
             className="h-[60px] flex-1 appearance-none border-none bg-transparent pl-4 text-white outline-none placeholder:text-[#626262]"
             placeholder="Search for token"
-            onChange={(e) => setQuery(e.target.value)}
           />
           <button
             onClick={() => {
@@ -31,12 +37,11 @@ const AllTokens = () => {
           >
             Search
           </button>
-        </div>
+        </form>
       </div>
-      {!query && <SelectToken />}
-      {query && <TokenList query={query} />}
+      <TokenList query={query} />
     </div>
   );
 };
 
-export default AllTokens;
+export default SearchAndSelectTokens;

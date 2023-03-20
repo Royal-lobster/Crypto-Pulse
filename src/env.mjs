@@ -5,10 +5,8 @@ import { z } from "zod";
  * built with invalid env vars.
  */
 const server = z.object({
-  DATABASE_URL: z.string().url(),
   NODE_ENV: z.enum(["development", "test", "production"]),
-  ALCHEMY_API_KEY: z.string().min(1),
-  HiIQ_CONTRACT_ADDRESS: z.string().startsWith("0x").length(42),
+  DATABASE_URL: z.string().url(),
   BANANA_API_KEY: z.string().min(1),
   BANANA_MODEL_KEY: z.string().min(1),
   CRYPTOPANIC_API_KEY: z.string().min(1),
@@ -23,7 +21,9 @@ const server = z.object({
  * built with invalid env vars. To expose them to the client, prefix them with `NEXT_PUBLIC_`.
  */
 const client = z.object({
-  // NEXT_PUBLIC_CLIENTVAR: z.string().min(1),
+  NEXT_PUBLIC_ALCHEMY_API_KEY: z.string().min(1),
+  NEXT_PUBLIC_HiIQ_CONTRACT_ADDRESS: z.string().startsWith("0x").length(42),
+  NEXT_PUBLIC_NODE_ENV: z.enum(["development", "test", "production"]),
 });
 
 /**
@@ -33,10 +33,15 @@ const client = z.object({
  * @type {Record<keyof z.infer<typeof server> | keyof z.infer<typeof client>, string | undefined>}
  */
 const processEnv = {
+  // CLIENT-SIDE ================
+  NEXT_PUBLIC_NODE_ENV: process.env.NEXT_PUBLIC_NODE_ENV,
+  NEXT_PUBLIC_ALCHEMY_API_KEY: process.env.NEXT_PUBLIC_ALCHEMY_API_KEY,
+  NEXT_PUBLIC_HiIQ_CONTRACT_ADDRESS:
+    process.env.NEXT_PUBLIC_HiIQ_CONTRACT_ADDRESS,
+
+  // SERVER-SIDE ================
+  NODE_ENV: process.env.NEXT_PUBLIC_NODE_ENV,
   DATABASE_URL: process.env.DATABASE_URL,
-  NODE_ENV: process.env.NODE_ENV,
-  ALCHEMY_API_KEY: process.env.ALCHEMY_API_KEY,
-  HiIQ_CONTRACT_ADDRESS: process.env.HiIQ_CONTRACT_ADDRESS,
   BANANA_API_KEY: process.env.BANANA_API_KEY,
   BANANA_MODEL_KEY: process.env.BANANA_MODEL_KEY,
   CRYPTOPANIC_API_KEY: process.env.CRYPTOPANIC_API_KEY,
@@ -46,6 +51,7 @@ const processEnv = {
   ROTATING_PROXY_PASSWORD: process.env.ROTATING_PROXY_PASSWORD,
 };
 
+// --------------------------
 // Don't touch the part below
 // --------------------------
 
