@@ -14,6 +14,7 @@ const TokenList = ({ query }: { query?: string }) => {
         );
         return data.coins;
       }
+
       const { data } = await axios.get<Coin[]>(
         "https://api.coingecko.com/api/v3/coins/"
       );
@@ -21,15 +22,15 @@ const TokenList = ({ query }: { query?: string }) => {
     },
   });
 
-  console.log(coinsData);
+  const coins = coinsData?.slice(0, 24);
 
   return (
     <>
-      {isLoading || !coinsData ? (
+      {isLoading && !coinsData ? (
         <TokensLoader />
       ) : (
         <div className="mt-14 grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
-          {coinsData.splice(0, 24).map((coin) => (
+          {coins?.map((coin) => (
             <TokenCard
               id={coin.id}
               image={coin.image}

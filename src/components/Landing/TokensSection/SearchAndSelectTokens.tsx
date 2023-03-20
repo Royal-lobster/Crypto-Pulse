@@ -11,6 +11,8 @@ const SearchAndSelectTokens = () => {
     setQuery(inputRef.current?.value as string);
   };
 
+  console.log(query);
+
   return (
     <div className="mt-28">
       <div className="flex flex-col justify-between gap-4 lg:flex-row">
@@ -25,6 +27,7 @@ const SearchAndSelectTokens = () => {
             <SearchIcon />
           </div>
           <input
+            ref={inputRef}
             type="text"
             className="h-[60px] flex-1 appearance-none border-none bg-transparent pl-4 text-white outline-none placeholder:text-[#626262]"
             placeholder="Search for token"
