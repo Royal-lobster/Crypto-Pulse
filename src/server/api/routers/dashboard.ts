@@ -111,7 +111,7 @@ export const dashboardRouter = createTRPCRouter({
         })),
       }),
       prisma.statistics.deleteMany({
-        where: { tokenId: { in: tokens.map((t) => t.id) } },
+        where: { tokenId: { in: stats.map((t) => t.coinId) } },
       }),
       prisma.statistics.createMany({
         skipDuplicates: true,
