@@ -27,7 +27,19 @@ const fetchCryptoPanicArticles = async (
       const newsRes: AxiosResponse<CryptoPanicResponseData> = await axios.get(
         `https://cryptopanic.com/api/v1/posts/?auth_token=${env.CRYPTOPANIC_API_KEY}&currencies=${ticker}&public=true&filter=hot&period=${days}d&kind=news`
       );
-      const topNews = newsRes.data.results?.slice(0, 6);
+      const data = newsRes.data.results;
+
+      const previousDayMidnight = new Date(
+        new Date().setDate(new Date().getDate() - days)
+      );
+      previousDayMidnight.setHours(0, 0, 0, 0);
+      const topNews = data
+        ?.filter((result) => new Date(result.created_at) > previousDayMidnight)
+        .slice(0, 10);
+      if (!topNews)
+        console.log(
+          `🌴 | cryptopanic fetch success for ${ticker} but no news found`
+        );
       fetchedNewsArticles.set(ticker, topNews);
       console.log(`🌴 | cryptopanic fetch success for ${ticker}`);
     } catch (e) {
