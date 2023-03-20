@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { useState } from "react";
+import { useHiIQTokensLeft } from "~/hooks/useHiIQTokensLeft";
 import { useSubscriptionsStore } from "~/store/subscriptions";
 import { api } from "~/utils/api";
 
@@ -20,8 +21,11 @@ const TokenCard = ({ large, name, ticker, thumb, id }: TokenCardProps) => {
   const { mutate: mutateAdd } = api.token.addToken.useMutation();
   const removeToken = useSubscriptionsStore((state) => state.removeToken);
   const addToken = useSubscriptionsStore((state) => state.addToken);
+  const { tokensLeft } = useHiIQTokensLeft();
+  const isDisabled = tokensLeft <= 0 && !isChecked;
 
   const handleTokenClick = () => {
+    if (isDisabled) return;
     setIsChecked(!isChecked);
     if (isChecked) {
       mutateRemove({ tokenId: id });
@@ -47,7 +51,8 @@ const TokenCard = ({ large, name, ticker, thumb, id }: TokenCardProps) => {
     <div
       onClick={handleTokenClick}
       data-checked={tokenIsChecked || isChecked || undefined}
-      className="flex cursor-pointer items-center rounded-xl py-2.5 px-4 outline-[#5d5f62] hover:shadow-lg hover:outline data-[checked]:bg-[#3D4045]"
+      data-disabled={isDisabled || undefined}
+      className="flex cursor-pointer items-center rounded-xl py-2.5 px-4 outline-[#5d5f62] hover:shadow-lg  hover:outline data-[disabled]:cursor-auto data-[checked]:bg-[#3D4045] data-[disabled]:opacity-50 data-[disabled]:shadow-none data-[disabled]:outline-none"
     >
       <div className="flex w-full items-center gap-3">
         <Image
@@ -67,6 +72,7 @@ const TokenCard = ({ large, name, ticker, thumb, id }: TokenCardProps) => {
         </div>
         <div className="relative ml-auto text-[#FFFBFB]">
           <input
+            disabled={isDisabled}
             type="checkbox"
             name="token"
             checked={isChecked}

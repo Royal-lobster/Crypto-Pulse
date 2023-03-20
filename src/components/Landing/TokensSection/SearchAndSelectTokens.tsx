@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { type Coin } from "types/coin";
+import { useHiIQTokensLeft } from "~/hooks/useHiIQTokensLeft";
 import SearchIcon from "../../Icons/Search";
 import TokensLoader from "../../loader/TokensLoader";
 import TokenCard from "./TokenCard";
@@ -8,18 +9,17 @@ const SearchAndSelectTokens = () => {
   const [query, setQuery] = useState("");
   const [coinsData, setCoinsData] = useState<Coin[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const { tokensLimit, userHiIQ } = useHiIQTokensLeft();
 
   useEffect(() => {
     const getCoins = async () => {
       setIsLoading(true);
       try {
-        console.log(query);
         const res = await fetch(
           `https://api.coingecko.com/api/v3/search?query=${query}`
         );
         const data = (await res.json()) as { coins: Coin[] };
         const coins = data.coins.slice(0, 24);
-        console.log(coins);
         setCoinsData(coins);
       } catch (error) {}
     };
@@ -38,9 +38,15 @@ const SearchAndSelectTokens = () => {
   return (
     <div className="mt-28">
       <div className="flex flex-col justify-between gap-4 lg:flex-row">
-        <h1 className="self-center font-display text-2xl font-bold text-white">
-          Select your Tokens !
-        </h1>
+        <div className="text-white">
+          <h1 className="self-center font-display text-2xl font-bold ">
+            Select your Tokens !
+          </h1>
+          <p className="mt-3 max-w-sm font-display text-lg">
+            You have <b>{userHiIQ} HiIQ.</b> You can select up to{" "}
+            <b>{tokensLimit}</b> Tokens.
+          </p>
+        </div>
         <form
           onSubmit={handleSearchSubmit}
           className="flex h-[60px] w-full max-w-lg rounded-xl bg-[#1A1B1F] pr-2.5 shadow-md"
