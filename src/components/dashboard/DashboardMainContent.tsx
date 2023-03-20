@@ -26,7 +26,7 @@ const DashboardMainContent = ({
   if (isLoading && !data)
     return (
       <>
-        <div className="flex flex-col items-center justify-center py-32 text-[#a9a9aa] text-white">
+        <div className="flex flex-col items-center justify-center py-32 text-white">
           <Star />
           <p className="mt-2 font-display text-xl">Fetching Data</p>
         </div>
@@ -50,7 +50,7 @@ const DashboardMainContent = ({
     );
 
   return (
-    <div className="z-10 mx-auto mt-10 flex flex-col gap-[50px] px-6 pb-20 sm:px-8 md:px-10 lg:mt-20 lg:flex-row lg:pr-[100px] xl:max-w-7xl xl:px-0 xl:pr-[70px]">
+    <div className="z-10 mx-auto mt-10 flex flex-col gap-[50px] px-0 pb-20 sm:px-8 md:px-10 lg:mt-20 lg:flex-row lg:pr-[100px] xl:max-w-7xl xl:px-0 xl:pr-[70px]">
       <div className="relative">
         <StickyTokenCard
           tokenName={tokenName}

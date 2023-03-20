@@ -44,7 +44,7 @@ const Dashboard = () => {
   return (
     <>
       <Tab.Group defaultIndex={0}>
-        <div className="relative z-10 mx-auto mt-10 w-full px-6 sm:px-8 md:mt-20 md:px-10 xl:max-w-7xl xl:px-0">
+        <div className="relative z-10 mx-auto mt-10 w-full px-0 sm:px-8 md:mt-20 md:px-10 xl:max-w-7xl xl:px-0">
           <h1 className="font-inter text-2xl font-black text-white sm:text-3xl md:text-5xl">
             Briefing for {getCurrentDate(Date.now())}
           </h1>
@@ -53,8 +53,8 @@ const Dashboard = () => {
             this page !
           </p>
         </div>
-        <div className="mx-6 mt-10 flex items-center gap-4 rounded-xl border border-[#434447] py-2.5 px-8 sm:mx-8 md:mx-10 lg:fixed lg:top-1/2 lg:right-[20px] lg:mt-0 lg:flex lg:-translate-y-1/2 lg:flex-col lg:justify-center lg:gap-0 lg:py-5 lg:px-0 xl:right-[50px] xl:mx-0">
-          <div className="flex items-center justify-center gap-4 text-[#ffffff7a] lg:flex-col lg:px-2.5 lg:pt-5">
+        <div className="mx-0 mt-10 flex items-center gap-4 rounded-xl border border-[#434447] pl-8 pr-3 sm:mx-8 md:mx-10 lg:fixed lg:top-1/2 lg:right-[20px] lg:mt-0 lg:flex lg:-translate-y-1/2 lg:flex-col lg:justify-center lg:gap-0 lg:py-5 lg:px-0 lg:pr-0 xl:right-[50px] xl:mx-0">
+          <div className="flex flex-shrink-0 items-center justify-center gap-4 py-2.5  text-[#ffffff7a] lg:flex-col  lg:px-2.5 lg:pt-5">
             <div className="self-center text-xs uppercase lg:rotate-[270deg]">
               <p>GO TO</p>
             </div>
@@ -64,9 +64,9 @@ const Dashboard = () => {
           </div>
           <div className="mt-3 hidden h-[1px] w-full flex-grow bg-[#434447] lg:block" />
           <Tab.List>
-            <div className="flex justify-center gap-3 lg:flex-col lg:justify-start lg:px-2.5 lg:pt-4">
+            <div className="flex justify-center gap-3 overflow-scroll border-l border-[#434447] py-2.5 pl-3  lg:flex-col lg:justify-start lg:overflow-hidden lg:border-l-0 lg:py-0 lg:px-2.5 lg:pl-0 lg:pt-4">
               {userSubsribedTokens?.map((subsribedToken) => (
-                <Tab key={subsribedToken.id}>
+                <Tab key={subsribedToken.id} className="flex-shrink-0">
                   <Image
                     src={subsribedToken.image}
                     alt={subsribedToken.id}
@@ -79,12 +79,11 @@ const Dashboard = () => {
             </div>
           </Tab.List>
         </div>
-
         <Tab.Panels>
           {userSubsribedTokens?.map((subscribedToken, i) => {
             return (
               <Tab.Panel key={`${subscribedToken.id}-${i}`}>
-                <div className="relative z-10 mx-auto mt-10 flex items-center px-6 sm:px-8 md:px-10 lg:mt-20 lg:pr-[100px] xl:max-w-7xl xl:pr-[70px] xl:pl-0">
+                <div className="relative z-10 mx-auto mt-10 flex items-center px-0 sm:px-8 md:px-10 lg:mt-20 lg:pr-[100px] xl:max-w-7xl xl:pr-[70px] xl:pl-0">
                   <div className="flex gap-3 rounded-xl border border-[#434447] py-3 px-10 pl-4">
                     <Image
                       src={subscribedToken.image}

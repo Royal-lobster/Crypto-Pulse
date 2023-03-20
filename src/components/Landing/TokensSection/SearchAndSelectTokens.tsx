@@ -1,17 +1,22 @@
 import { useRef, useState } from "react";
 import SearchIcon from "../../Icons/Search";
 import TokenList from "./TokenList";
+import Close from "~/components/Icons/Close";
 
 const SearchAndSelectTokens = () => {
   const [query, setQuery] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
+  const [inputValue, setInputValue] = useState<string>("");
 
   const handleSearchSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setQuery(inputRef.current?.value as string);
   };
 
-  console.log(query);
+  const clearQuery = () => {
+    setInputValue("");
+    setQuery("");
+  };
 
   return (
     <div className="mt-28">
@@ -28,10 +33,22 @@ const SearchAndSelectTokens = () => {
           </div>
           <input
             ref={inputRef}
+            value={inputValue}
             type="text"
             className="h-[60px] flex-1 appearance-none border-none bg-transparent pl-4 text-white outline-none placeholder:text-[#626262]"
             placeholder="Search for token"
+            onChange={(e) => {
+              setInputValue(e.target?.value);
+            }}
           />
+          {inputValue?.length > 0 && (
+            <button
+              className="mr-6 flex items-center text-white"
+              onClick={clearQuery}
+            >
+              <Close />
+            </button>
+          )}
           <button
             onClick={() => {
               setQuery(inputRef.current?.value as string);
