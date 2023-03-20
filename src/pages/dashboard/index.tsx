@@ -33,7 +33,7 @@ const Dashboard = () => {
 
   if (userSubsribedTokens?.length === 0 || (!userSubsribedTokens && !isLoading))
     return (
-      <div className="flex min-h-[calc(100vh-90px)] flex-col items-center justify-center py-32 text-white">
+      <div className="flex flex-col items-center justify-center py-32 text-white">
         <Star noAnimate />
         <h1 className="mt-5 text-center font-display text-3xl">
           No Tokens subscribed
