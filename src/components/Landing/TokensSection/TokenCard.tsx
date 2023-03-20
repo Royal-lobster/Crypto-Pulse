@@ -5,17 +5,13 @@ import { api } from "~/utils/api";
 
 type TokenCardProps = {
   id: string;
-  image?: {
-    large: string;
-    thumb: string;
-    small: string;
-  };
+  large: string;
   thumb?: string;
   name: string;
   ticker: string;
 };
 
-const TokenCard = ({ image, name, ticker, thumb, id }: TokenCardProps) => {
+const TokenCard = ({ large, name, ticker, thumb, id }: TokenCardProps) => {
   const tokenIsChecked = useSubscriptionsStore((state) =>
     state.tokens.find((token) => token.id === id)
   );
@@ -35,14 +31,14 @@ const TokenCard = ({ image, name, ticker, thumb, id }: TokenCardProps) => {
       mutateAdd({
         tokenId: id,
         tickerId: ticker,
-        tokenImg: image?.large as string,
+        tokenImg: large,
         tokenName: name,
       });
       addToken({
         id,
         name,
         ticker: ticker,
-        image: image?.large as string,
+        image: large,
       });
     }
   };
@@ -55,7 +51,7 @@ const TokenCard = ({ image, name, ticker, thumb, id }: TokenCardProps) => {
     >
       <div className="flex w-full items-center gap-3">
         <Image
-          src={thumb ? thumb : (image?.large as string)}
+          src={thumb ? thumb : large}
           alt={name}
           width={40}
           height={40}

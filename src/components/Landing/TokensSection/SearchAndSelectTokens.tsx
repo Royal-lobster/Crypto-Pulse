@@ -19,13 +19,14 @@ const SearchAndSelectTokens = () => {
         );
         const data = (await res.json()) as { coins: Coin[] };
         const coins = data.coins.slice(0, 24);
+        console.log(coins);
         setCoinsData(coins);
       } catch (error) {}
     };
     getCoins().finally(() => {
       setIsLoading(false);
     });
-  }, [query, setCoinsData]);
+  }, [query]);
 
   const handleSearchSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -64,7 +65,7 @@ const SearchAndSelectTokens = () => {
           {coinsData.map((coin) => (
             <TokenCard
               id={coin.id}
-              image={coin.image}
+              large={coin.large || (coin.image?.large as string)}
               key={coin.id}
               thumb={coin.large as string}
               name={coin.name}

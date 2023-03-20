@@ -33,9 +33,9 @@ const TokenList = ({ query }: { query?: string }) => {
           {coins?.map((coin) => (
             <TokenCard
               id={coin.id}
-              image={coin.image}
+              large={coin.large || (coin.image?.large as string)}
               key={coin.id}
-              thumb={coin.large as string}
+              thumb={coin.thumb || (coin.image?.thumb as string)}
               name={coin.name}
               ticker={coin.symbol}
             />
