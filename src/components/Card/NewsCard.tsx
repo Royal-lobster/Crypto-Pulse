@@ -43,6 +43,7 @@ const NewsCard = ({
       <p className="text-md mt-4 font-display font-normal text-[#CCCCCC]">
         {description}
       </p>
+
       <button
         className="mt-4 flex items-center gap-2.5 text-[#FF5CAA] hover:underline"
         onClick={() => {
