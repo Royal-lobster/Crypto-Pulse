@@ -2,6 +2,7 @@ import { extractFromHtml } from "@extractus/article-extractor";
 import axios, { type AxiosResponse } from "axios";
 import { env } from "~/env.mjs";
 import { type ResponseData as CryptoPanicResponseData } from "~/types/cryptopanic";
+import { isYesterdayRelativeTo } from "~/utils/isYesterdayRelativeTo";
 
 export const getPastDayNews = async (coinTickers: string[], days: number) => {
   console.log(`\n🏬 Fetching news for ${coinTickers.join(", ")}...`);
@@ -25,23 +26,23 @@ const fetchCryptoPanicArticles = async (
   for (const ticker of coinTickers) {
     try {
       const newsRes: AxiosResponse<CryptoPanicResponseData> = await axios.get(
-        `https://cryptopanic.com/api/v1/posts/?auth_token=${env.CRYPTOPANIC_API_KEY}&currencies=${ticker}&public=true&filter=hot&period=${days}d&kind=news`
+        `https://cryptopanic.com/api/v1/posts/?auth_token=${env.CRYPTOPANIC_API_KEY}&currencies=${ticker}&public=true&period=${days}d&kind=news`
       );
       const data = newsRes.data.results;
 
-      const previousDayMidnight = new Date(
-        new Date().setDate(new Date().getDate() - days)
-      );
-      previousDayMidnight.setHours(0, 0, 0, 0);
       const topNews = data
-        ?.filter((result) => new Date(result.created_at) > previousDayMidnight)
+        ?.filter(
+          (result) =>
+            isYesterdayRelativeTo(new Date(result.published_at), new Date()) ||
+            isYesterdayRelativeTo(new Date(result.created_at), new Date())
+        )
         .slice(0, 10);
-      if (!topNews)
-        console.log(
-          `🌴 | cryptopanic fetch success for ${ticker} but no news found`
-        );
       fetchedNewsArticles.set(ticker, topNews);
-      console.log(`🌴 | cryptopanic fetch success for ${ticker}`);
+      console.log(
+        `🌴 | cryptopanic fetch success for ${ticker} with ${
+          topNews?.length || 0
+        } results`
+      );
     } catch (e) {
       const msg = e as { message: string };
       console.error(`❌ cryptopanic fetch fail for ${ticker}`, msg);
@@ -108,7 +109,8 @@ const getScrappedArticles = async (
         })()
       );
     }
-    scrappedArticles.push(...(await Promise.all(promises)));
+    const resolvedPromises = await Promise.all(promises);
+    scrappedArticles.push(...resolvedPromises);
   }
   return scrappedArticles.filter(isTruthy);
 };

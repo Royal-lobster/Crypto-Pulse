@@ -6,6 +6,7 @@ import { getPastDayNews } from "~/modules/getPastDayNews";
 import { getPastDayStats } from "~/modules/getPastDayStatistics";
 
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
+import { isYesterdayRelativeTo } from "~/utils/isYesterdayRelativeTo";
 
 export const dashboardRouter = createTRPCRouter({
   getUserSubscribedTokens: protectedProcedure.query(async ({ ctx }) => {
@@ -61,10 +62,7 @@ export const dashboardRouter = createTRPCRouter({
 
     for (const t of tokens) {
       const now = new Date();
-      if (
-        !t.lastRefresh ||
-        now.getTime() - t.lastRefresh.getTime() >= 86400000
-      ) {
+      if (!t.lastRefresh || !isYesterdayRelativeTo(t.lastRefresh, now)) {
         tokensToBeRefreshed.push(t);
       }
     }
