@@ -4,7 +4,7 @@ import DashboardLoader from "~/components/loader/DashboardLoader";
 import { api } from "~/utils/api";
 import { getCurrentDate } from "~/utils/getCurrentDate";
 import DashboardMainContent from "~/components/dashboard/DashboardMainContent";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import PopNewsCard from "~/components/Card/PopNewsCard";
 import { type NewsDetails } from "types/news";
 import Star from "~/components/Icons/Star";
@@ -16,6 +16,8 @@ const Dashboard = () => {
   const { isLoading: tokensIsLoading, data: userSubsribedTokens } =
     api.dashboard.getUserSubscribedTokens.useQuery();
   const [currentView, setCurrentView] = useState<string>();
+
+  const subscribedTokenRefs = useRef<{ [key: string]: HTMLDivElement }>({});
 
   const { data: newsData, isLoading } =
     api.dashboard.getNewsAndStatistics.useQuery();
@@ -68,17 +70,24 @@ const Dashboard = () => {
         </div>
         <div className="mt-3 hidden h-[1px] w-full flex-grow bg-[#434447] lg:block" />
         <div className="flex justify-center gap-3 overflow-scroll border-l border-[#434447] py-2.5 pl-3 lg:flex-col lg:justify-start lg:overflow-hidden lg:border-l-0 lg:py-0 lg:px-2.5 lg:pl-2.5 lg:pt-4">
-          {userSubsribedTokens?.map((subsribedToken) => (
+          {userSubsribedTokens?.map((subscribedToken) => (
             <button
-              key={subsribedToken.id}
+              key={subscribedToken.id}
               className="flex-shrink-0 cursor-pointer"
               onClick={() => {
-                setCurrentView(subsribedToken.id);
+                if (subscribedToken) {
+                  setCurrentView(subscribedToken.id);
+                  if (subscribedTokenRefs.current[subscribedToken.id]) {
+                    subscribedTokenRefs.current[
+                      subscribedToken?.id
+                    ]?.scrollIntoView({ behavior: "smooth" });
+                  }
+                }
               }}
             >
               <Image
-                src={subsribedToken.image}
-                alt={subsribedToken.id}
+                src={subscribedToken.image}
+                alt={subscribedToken.id}
                 width={36}
                 height={36}
                 className="h-[36px] w-[36px] rounded-full"
@@ -90,7 +99,17 @@ const Dashboard = () => {
 
       {newsData?.map((tokenData, i) => {
         return (
-          <div key={`${tokenData?.id}-${i}`} id={tokenData?.id}>
+          <div
+            key={`${tokenData?.id}-${i}`}
+            id={tokenData?.id}
+            id={tokenData?.id}
+            ref={(ref) => {
+              if (ref && tokenData) {
+                subscribedTokenRefs.current[tokenData?.id] = ref;
+              }
+            }}
+            className={currentView === tokenData?.id ? "active" : ""}
+          >
             <div className="relative z-10 mx-auto mt-10 flex items-center px-0 sm:px-8 md:px-10 lg:mt-20 lg:pr-[100px] xl:max-w-7xl xl:pr-[70px] xl:pl-0">
               <div className="flex gap-3 rounded-xl border border-[#434447] py-3 px-10 pl-4">
                 <Image
