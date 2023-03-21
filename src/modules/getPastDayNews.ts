@@ -68,7 +68,26 @@ const scrapArticle = async (url: string) => {
     const data = res.data;
     const request = res.request as { res: { responseUrl: string } };
     const ogUrl = request?.res?.responseUrl;
-    return await extractFromHtml(data, ogUrl);
+    const result = await extractFromHtml(data, ogUrl);
+    if (ogUrl.includes("twitter") && result === null) {
+      const linkPreview = await axios.get<{
+        title: string;
+        description: string;
+        image: string;
+      }>(
+        `http://api.linkpreview.net/?key=${env.LINK_PREVIEW_API_KEY}&q=${ogUrl}`
+      );
+      return {
+        createdAt: new Date(new Date().setDate(new Date().getDate() - 1)),
+        content: linkPreview.data.description,
+        image: linkPreview.data.image,
+        title: linkPreview.data.title,
+        url: ogUrl,
+        description: linkPreview.data.description,
+      };
+    }
+
+    return result;
   } catch (e) {
     console.error(
       `❌ scrapping fail ${url}`,
@@ -94,8 +113,8 @@ const getScrappedArticles = async (
       promises.push(
         (async () => {
           const scrapperRes = await scrapArticle(url);
-          console.log(`🗞️ | ${result.title}`);
           if (scrapperRes) {
+            console.log(`🗞️ | ${result.title}`);
             return {
               ticker,
               title: result.title,

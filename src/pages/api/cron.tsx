@@ -6,81 +6,74 @@ import { getPastDayNews } from "~/modules/getPastDayNews";
 const prisma = new PrismaClient();
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
-  const tokensToBeUpdated = await prisma.token.findMany({
-    where: {
-      OR: [
-        {
-          lastRefresh: {
-            lte: new Date(new Date().getTime() - 24 * 60 * 60 * 1000),
-          },
-        },
-        { lastRefresh: null },
-      ],
+  const allTokens = await prisma.token.findMany({
+    select: {
+      ticker: true,
+      id: true,
+      lastRefresh: true,
+      _count: { select: { news: true } },
     },
-    select: { ticker: true, id: true },
   });
 
-  if (tokensToBeUpdated.length === 0) {
+  const tokensToBeRefreshed = allTokens.filter((t) => {
+    const isUpdatedToday =
+      t.lastRefresh &&
+      new Date(t.lastRefresh).getDate() === new Date().getDate();
+    return !isUpdatedToday || t._count.news === 0;
+  });
+
+  if (tokensToBeRefreshed.length === 0) {
     console.log("🎉 No tokens to be updated!");
     res.status(200).json({ message: "No tokens to be updated!" });
     return;
   }
 
-  const tokenIds = tokensToBeUpdated.map((token) => token.id);
-  const tokenTickers = tokensToBeUpdated.map((token) => token.ticker);
+  const tokenTickers = tokensToBeRefreshed.map((token) => token.ticker);
 
   console.log(
     `\n📊 Fetching statistics data for ${tokenTickers.join(", ")}...\n`
   );
-  const statisticsData = await Promise.all(
-    tokenIds.map(async (tokenId) => {
-      return await getPastDayStats(tokenId, "usd", 1);
-    })
+
+  const stats = await Promise.all(
+    tokensToBeRefreshed.map(async (t) => await getPastDayStats(t.id, "usd", 1))
   );
 
-  const newsData = await getPastDayNews(tokenTickers, 1);
+  const news = await getPastDayNews(tokenTickers, 1);
 
-  console.log("\n📼 Writing data to DB...");
-  if (newsData && newsData.length > 0) {
-    const result = await prisma.$transaction([
-      ...statisticsData.map((statistic) =>
-        prisma.statistics.upsert({
-          where: { id: statistic.coinId },
-          update: {
-            id: statistic.coinId,
-            dayHighestPrice: statistic.pastDayHighestPrice,
-            dayLowestPrice: statistic.pastDayLowestPrice,
-            dayVolume: statistic.pastDayTotalVolume,
-            tokenId: statistic.coinId,
-          },
-          create: {
-            id: statistic.coinId,
-            dayHighestPrice: statistic.pastDayHighestPrice,
-            dayLowestPrice: statistic.pastDayLowestPrice,
-            dayVolume: statistic.pastDayTotalVolume,
-            tokenId: statistic.coinId,
-          },
-        })
-      ),
-      ...newsData.map((news) =>
-        prisma.news.upsert({
-          where: { id: news.url },
-          update: {},
-          create: {
-            title: news.title,
-            rawContent: news.rawContent,
-            image: news.image || "",
-            createdAt: news.createdAt,
-            id: news.url,
-            tokens: {
-              connect: { ticker: news.ticker },
-            },
-          },
-        })
-      ),
+  if (news && news.length > 0) {
+    console.log("\n📼 Writing data to DB...");
+    await prisma.$transaction([
       prisma.token.updateMany({
-        where: { id: { in: tokenIds } },
-        data: { lastRefresh: new Date() },
+        where: { id: { in: tokensToBeRefreshed.map((t) => t.id) } },
+        data: {
+          lastRefresh: new Date(),
+        },
+      }),
+      prisma.news.createMany({
+        skipDuplicates: true,
+        data: news.map((n) => ({
+          id: n.url,
+          createdAt: new Date(n.createdAt),
+          title: n.title,
+          rawContent: n.rawContent,
+          description: n.description,
+          image: n.image,
+          tokenId: tokensToBeRefreshed.find((t) => t.ticker === n.ticker)
+            ?.id as string,
+        })),
+      }),
+      prisma.statistics.deleteMany({
+        where: { tokenId: { in: stats.map((t) => t.coinId) } },
+      }),
+      prisma.statistics.createMany({
+        skipDuplicates: true,
+        data: stats.map((s) => ({
+          id: s.coinId,
+          dayHighestPrice: s.pastDayHighestPrice,
+          dayLowestPrice: s.pastDayLowestPrice,
+          dayVolume: s.pastDayTotalVolume,
+          tokenId: s.coinId,
+        })),
       }),
     ]);
     console.log("🎉 Data written to DB Successfully!");
@@ -95,8 +88,10 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     });
     console.log(`🎉 Deleted ${deletedNews.count} old news!`);
 
-    res.status(200).json(result);
+    res.status(200).json({ success: true });
   }
+  console.log("🚧 No news found! :( so cannot update DB!");
+  res.status(500).json({ success: false, news, stats });
 };
 
 export default handler;

@@ -14,6 +14,7 @@ const server = z.object({
   ROTATING_PROXY_PORT: z.string().min(1),
   ROTATING_PROXY_USER: z.string().min(1),
   ROTATING_PROXY_PASSWORD: z.string().min(1),
+  LINK_PREVIEW_API_KEY: z.string().min(1),
 });
 
 /**
@@ -49,6 +50,7 @@ const processEnv = {
   ROTATING_PROXY_PORT: process.env.ROTATING_PROXY_PORT,
   ROTATING_PROXY_USER: process.env.ROTATING_PROXY_USER,
   ROTATING_PROXY_PASSWORD: process.env.ROTATING_PROXY_PASSWORD,
+  LINK_PREVIEW_API_KEY: process.env.LINK_PREVIEW_API_KEY,
 };
 
 // --------------------------
