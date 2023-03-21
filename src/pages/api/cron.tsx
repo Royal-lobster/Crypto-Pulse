@@ -40,7 +40,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
   const newsData = await getPastDayNews(tokenTickers, 1);
 
-  console.log("📼 Writing data to DB...");
+  console.log("\n📼 Writing data to DB...");
   if (newsData && newsData.length > 0) {
     const result = await prisma.$transaction([
       ...statisticsData.map((statistic) =>
@@ -84,6 +84,17 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       }),
     ]);
     console.log("🎉 Data written to DB Successfully!");
+
+    console.log("\n🗑 Deleting old news...");
+    const deletedNews = await prisma.news.deleteMany({
+      where: {
+        createdAt: {
+          lte: new Date(new Date().getTime() - 2 * 24 * 60 * 60 * 1000),
+        },
+      },
+    });
+    console.log(`🎉 Deleted ${deletedNews.count} old news!`);
+
     res.status(200).json(result);
   }
 };
