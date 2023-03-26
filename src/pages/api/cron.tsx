@@ -15,7 +15,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     },
   });
 
-  const tokensToBeRefreshed = allTokens.filter((t) => {
+  let tokensToBeRefreshed = allTokens.filter((t) => {
     const isUpdatedToday =
       t.lastRefresh &&
       new Date(t.lastRefresh).getDate() === new Date().getDate();
@@ -27,6 +27,11 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     res.status(200).json({ message: "No tokens to be updated!" });
     return;
   }
+
+  const toRunNext = tokensToBeRefreshed.length - 5 > 0;
+
+  // take only 5 tokens to be refreshed
+  tokensToBeRefreshed = tokensToBeRefreshed.slice(0, 5);
 
   const tokenTickers = tokensToBeRefreshed.map((token) => token.ticker);
 
@@ -87,6 +92,11 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       },
     });
     console.log(`🎉 Deleted ${deletedNews.count} old news!`);
+
+    if (toRunNext) {
+      console.log("\n🔁 Running next cron job...");
+      await fetch("/api/cron");
+    }
 
     res.status(200).json({ success: true });
   }

@@ -1,6 +1,7 @@
 import type { AxiosResponse } from "axios";
 import axios from "axios";
 import { env } from "~/env.mjs";
+import { getProxy } from "~/server/proxy";
 import { type MarketChartData } from "~/types/coingekko";
 
 export async function getPastDayStats(
@@ -11,15 +12,7 @@ export async function getPastDayStats(
   const url = `https://api.coingecko.com/api/v3/coins/${coinId}/market_chart?vs_currency=${vsCurrency}&days=${days}`;
 
   const response: AxiosResponse<MarketChartData> = await axios.get(url, {
-    proxy: {
-      host: env.ROTATING_PROXY_HOST,
-      port: Number(env.ROTATING_PROXY_PORT),
-      auth: {
-        username: env.ROTATING_PROXY_USER,
-        password: env.ROTATING_PROXY_PASSWORD,
-      },
-      protocol: "http",
-    },
+    proxy: await getProxy(),
   });
 
   const data = response.data;
