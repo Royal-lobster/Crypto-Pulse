@@ -7,7 +7,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const deletedNews = await prisma.news.deleteMany({
     where: {
       createdAt: {
-        lte: new Date(new Date().getTime() - 2 * 24 * 60 * 60 * 1000),
+        lte: new Date(new Date().getTime() - 1 * 24 * 60 * 60 * 1000),
       },
     },
   });
