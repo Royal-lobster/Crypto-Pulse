@@ -54,20 +54,13 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
   const news = await getPastDayNews(tokenTickers, 1);
 
-  console.log(
-    news.map((n) => ({
-      ...n,
-      tokenId: tokensToBeRefreshed.find((t) => t.ticker === n.ticker)?.id,
-    }))
-  );
-
   // ==============================
   // WRITE DATA TO DB
   // ==============================
 
   if (news && news.length > 0) {
     console.log("\n📼 Writing data to DB...");
-    const rese = await prisma.$transaction([
+    const result = await prisma.$transaction([
       prisma.token.updateMany({
         where: { id: { in: tokensToBeRefreshed.map((t) => t.id) } },
         data: {
@@ -102,7 +95,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       }),
     ]);
 
-    console.log(rese);
+    console.log(result);
 
     console.log("🎉 Data written to DB Successfully!");
 
