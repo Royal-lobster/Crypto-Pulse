@@ -2,10 +2,15 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { getPastDayStats } from "~/modules/getPastDayStatistics";
 import { PrismaClient } from "@prisma/client";
 import { getPastDayNews } from "~/modules/getPastDayNews";
+import { getBaseUrl } from "~/utils/api";
 
 const prisma = new PrismaClient();
+const TOKEN_SET_SIZE = 4; // TO AVOID EXCEEDING SERVERLESS FUNCTION TIME LIMIT
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
+  // ==============================
+  // FETCH TOKENS TO BE REFRESHED
+  // ==============================
   const allTokens = await prisma.token.findMany({
     select: {
       ticker: true,
@@ -19,6 +24,10 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     const isUpdatedToday =
       t.lastRefresh &&
       new Date(t.lastRefresh).getDate() === new Date().getDate();
+
+    console.log(`
+      ${t.ticker} - ${t.id} - ${t._count.news} - ${isUpdatedToday ? "✅" : "❌"}
+    `);
     return !isUpdatedToday || t._count.news === 0;
   });
 
@@ -28,16 +37,16 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     return;
   }
 
-  const toRunNext = tokensToBeRefreshed.length - 5 > 0;
+  const toRunNext = tokensToBeRefreshed.length - TOKEN_SET_SIZE > 0;
+  tokensToBeRefreshed = tokensToBeRefreshed.slice(0, TOKEN_SET_SIZE);
 
-  // take only 5 tokens to be refreshed
-  tokensToBeRefreshed = tokensToBeRefreshed.slice(0, 5);
+  // ==============================
+  // FETCH STATS AND NEWS
+  // ==============================
 
   const tokenTickers = tokensToBeRefreshed.map((token) => token.ticker);
 
-  console.log(
-    `\n📊 Fetching statistics data for ${tokenTickers.join(", ")}...\n`
-  );
+  console.log(`\n📊 Fetching data for ${tokenTickers.join(", ")}...\n`);
 
   const stats = await Promise.all(
     tokensToBeRefreshed.map(async (t) => await getPastDayStats(t.id, "usd", 1))
@@ -45,9 +54,20 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
   const news = await getPastDayNews(tokenTickers, 1);
 
+  console.log(
+    news.map((n) => ({
+      ...n,
+      tokenId: tokensToBeRefreshed.find((t) => t.ticker === n.ticker)?.id,
+    }))
+  );
+
+  // ==============================
+  // WRITE DATA TO DB
+  // ==============================
+
   if (news && news.length > 0) {
     console.log("\n📼 Writing data to DB...");
-    await prisma.$transaction([
+    const rese = await prisma.$transaction([
       prisma.token.updateMany({
         where: { id: { in: tokensToBeRefreshed.map((t) => t.id) } },
         data: {
@@ -57,7 +77,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       prisma.news.createMany({
         skipDuplicates: true,
         data: news.map((n) => ({
-          id: n.url,
+          id: `${n.url}?${n.ticker}`,
           createdAt: new Date(n.createdAt),
           title: n.title,
           rawContent: n.rawContent,
@@ -81,27 +101,24 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         })),
       }),
     ]);
+
+    console.log(rese);
+
     console.log("🎉 Data written to DB Successfully!");
 
-    console.log("\n🗑 Deleting old news...");
-    const deletedNews = await prisma.news.deleteMany({
-      where: {
-        createdAt: {
-          lte: new Date(new Date().getTime() - 2 * 24 * 60 * 60 * 1000),
-        },
-      },
-    });
-    console.log(`🎉 Deleted ${deletedNews.count} old news!`);
-
+    // ==============================
+    // TRIGGER NEXT CRON JOB
+    // ==============================
     if (toRunNext) {
       console.log("\n🔁 Running next cron job...");
-      await fetch("/api/cron");
+      await fetch(`${getBaseUrl()}/api/cache-cron`);
     }
 
     res.status(200).json({ success: true });
+  } else {
+    console.log("🚧 No news found! :( so cannot update DB!");
+    res.status(500).json({ success: false, news, stats });
   }
-  console.log("🚧 No news found! :( so cannot update DB!");
-  res.status(500).json({ success: false, news, stats });
 };
 
 export default handler;

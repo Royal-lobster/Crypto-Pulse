@@ -4,7 +4,7 @@ import TokensLoader from "../../loader/TokensLoader";
 import TokenCard from "./TokenCard";
 import axios from "axios";
 import { env } from "~/env.mjs";
-import { getProxy } from "~/server/proxy";
+import { proxy } from "~/server/proxy";
 
 const TokenList = ({ query }: { query?: string }) => {
   const { data: coinsData, isLoading } = useQuery({
@@ -14,7 +14,7 @@ const TokenList = ({ query }: { query?: string }) => {
         const { data } = await axios.get<{ coins: Coin[] }>(
           `https://api.coingecko.com/api/v3/search?query=${query}`,
           {
-            proxy: await getProxy(),
+            proxy,
           }
         );
         return data.coins;

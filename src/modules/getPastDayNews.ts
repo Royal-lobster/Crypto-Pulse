@@ -1,7 +1,6 @@
 import { extractFromHtml } from "@extractus/article-extractor";
 import axios, { type AxiosResponse } from "axios";
 import { env } from "~/env.mjs";
-import { getProxy } from "~/server/proxy";
 import { type ResponseData as CryptoPanicResponseData } from "~/types/cryptopanic";
 import { isYesterdayRelativeTo } from "~/utils/isYesterdayRelativeTo";
 
@@ -54,9 +53,7 @@ const fetchCryptoPanicArticles = async (
 
 const scrapArticle = async (url: string) => {
   try {
-    const res: AxiosResponse<string> = await axios.get(url, {
-      proxy: await getProxy(),
-    });
+    const res: AxiosResponse<string> = await axios.get(url, {});
 
     const data = res.data;
     const request = res.request as { res: { responseUrl: string } };

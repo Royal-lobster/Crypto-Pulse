@@ -1,7 +1,11 @@
 {
   "crons": [
     {
-      "path": "/api/cron",
+      "path": "/api/cache-cron",
+      "schedule": "0 0 * * *"
+    },
+    {
+      "path": "/api/delete-cron",
       "schedule": "0 0 * * *"
     }
   ]
